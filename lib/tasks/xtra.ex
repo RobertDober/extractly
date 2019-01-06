@@ -46,10 +46,6 @@ defmodule Mix.Tasks.Xtra do
     |> _run()
   end
 
-  defp _croak(message, code \\ 1) do
-    IO.puts :stderr, message
-    exit code
-  end
   defp _mappify_options({options, args, errors}),
     do: {options |> Enum.into(%{}), args, errors}
 
@@ -68,7 +64,7 @@ defmodule Mix.Tasks.Xtra do
   defp _process(options, template), do:
     if File.exists?(template),
       do: _process_template(options, template),
-      else: _croak("Template #{template} does not exist", 2)
+      else: IO.puts(:stderr, "Template #{template} does not exist")
 
   defp _process_template(options, template) do
     output_fn = Map.get(options, :output, String.replace(template, ~r{\.eex\z}, ""))
@@ -89,6 +85,6 @@ defmodule Mix.Tasks.Xtra do
     _process(options, template)
   end
   defp _run({_, _, errors}), do:
-    _croak "ERROR: Illegal arguments: #{inspect(errors)}\n\nTry `mix xtra.help` for, well, some help"
+    IO.puts(:stderr, "ERROR: Illegal arguments: #{inspect(errors)}\n\nTry `mix xtra.help` for, well, some help")
 
 end

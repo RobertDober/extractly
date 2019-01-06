@@ -24,18 +24,9 @@ defmodule Mix.Tasks.Xtra.Help do
 
   """
 
-  @help """
-  The following xtra.* tasks are available
-
-
-    * xtra
-
-
-  """
-
   @impl true
   def run(_args) do
-    IO.puts :stderr, @help
+    IO.puts :stderr, Extractly.moduledoc(to_string(__MODULE__)) 
   end
   
 end

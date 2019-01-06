@@ -45,7 +45,7 @@ defmodule Extractly do
         Extractly.moduledoc("Extractly")
   """
   def moduledoc(name) do
-    module = String.to_atom("Elixir." <> name)
+    module = String.replace(name, ~r{\A(?:Elixir\.)?}, "Elixir.") |> String.to_atom
 
     case Code.ensure_loaded(module) do
       {:module, _} ->
@@ -64,7 +64,7 @@ defmodule Extractly do
   @doc false
   def version do
     :application.ensure_started(:extractly)
-    with {:ok, version} = :application.get_key(:extractly, :vsn), do: version
+    with {:ok, version} = :application.get_key(:extractly, :vsn), do: to_string(version)
   end
 
   defp find_function_doc(doctuple, function_name, arity) do
