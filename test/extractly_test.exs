@@ -20,6 +20,12 @@ defmodule ExtractlyTest do
       assert fdoc == nil
     end
 
+    test "public function missing @doc" do
+      fdoc = Extractly.functiondoc "Support.Module1.missing/1"
+
+      assert fdoc == nil
+    end
+
     test "private function" do
       fdoc = Extractly.functiondoc "Support.Module1.add/2"
 
@@ -27,10 +33,30 @@ defmodule ExtractlyTest do
     end
 
     test "unexisting function" do
-      fdoc = Extractly.functiondoc "Support.Module1.#{random_string}/1"
+      fdoc = Extractly.functiondoc "Support.Module1.#{random_string()}/1"
 
       assert fdoc == nil
     end
     
+  end
+
+  describe "module doc" do
+    test "finds it if present" do
+      mdoc = Extractly.moduledoc "Support.Module1"
+
+      assert mdoc == "Moduledoc of Module1\n"
+    end
+
+    test "does not find it if module is absent" do
+      mdoc = Extractly.moduledoc "Support.M#{random_string()}"
+
+      assert mdoc == nil
+    end
+
+    test "does not find it if moduledoc is absent" do
+      mdoc = Extractly.moduledoc "Support.Module2"
+
+      assert mdoc == nil
+    end
   end
 end
