@@ -4,30 +4,37 @@
 
 ##  Mix task to Transform EEx templates in the context of the `Extractly` module.
 
+  This tool serves two purposes.
 
-  If a template is indicated than it is run in the context of the `Extractly` module which is
-  passed in as variable `xtra`. And the output is written to a file named like the template without
-  the `.eex` extension.
+  1. A simple CLI to basicly `EEx.eval_file/2`
 
-  This behavior can be changed via command line switches.
+  1. Access to the `Extractly` module (available as binding `xtra` too)
 
-  Without an input template provided, the task is implying that `README.md.eex` was passed in.
+  The `Extractly` module gives easy access to Elixir metainformation of the application using
+  the `extractly` package, notably, _module_  and _function_ documentation.
 
-  The `Extractly` module is available inside the templates but is also passed in as variable `xtra` for
-  the convenience of the templates' authors.
+  This is BTW the raison d'être of this package, simple creation of a `README.md` file with very simple
+  access to the projects hex documentation.
 
-  E.g. use the following template to extract some documentation from a module `M`.
+  Thusly hexdoc and Github will always be synchronized.
+
+  To see that in action just look at the `README.md.eex` file of this package.
+
+
+  Example:
 
       Some text
-      <%= xtra.function_doc(M, :shiny_function/2) %>
+      <%= xtra.functiondoc("M.shiny_function/2") %>
+      <%= xtra.moduledoc("String") %>
+
       More text
 
 
-## Usage:
+### Usage:
 
     mix xtra [options]... [template]
 
-### Options:
+#### Options:
 
     --help     Prints short help information to stdout and exits.
     --version  Prints the current version to stdout and exits.
@@ -37,7 +44,7 @@
               The name of the file the rendered template is written to, defaults to the templates'
               name, without the suffix `.eex`
 
-### Argument:
+#### Argument:
 
     template, filename of the `EEx` template to use, defaults to `"README.md.eex"`
 

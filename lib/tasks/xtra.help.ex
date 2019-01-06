@@ -4,11 +4,11 @@ defmodule Mix.Tasks.Xtra.Help do
   @shortdoc "Explains availabe xtra subtasks"
 
   @moduledoc """
-  ## Usage:
+  ### Usage:
   
       mix xtra [options]... [template]
 
-  ### Options:
+  #### Options:
 
       --help     Prints short help information to stdout and exits.
       --version  Prints the current version to stdout and exits.
@@ -18,7 +18,7 @@ defmodule Mix.Tasks.Xtra.Help do
                 The name of the file the rendered template is written to, defaults to the templates'
                 name, without the suffix `.eex`
 
-  ### Argument:
+  #### Argument:
 
       template, filename of the `EEx` template to use, defaults to `"README.md.eex"`
 
@@ -34,7 +34,7 @@ defmodule Mix.Tasks.Xtra.Help do
   """
 
   @impl true
-  def run(args) do
+  def run(_args) do
     IO.puts :stderr, @help
   end
   
