@@ -1,7 +1,6 @@
 # Extractly
 
 
-
 ##  Mix task to Transform EEx templates in the context of the `Extractly` module.
 
   This tool serves two purposes.
@@ -18,10 +17,11 @@
 
   Thusly hexdoc and Github will always be synchronized.
 
-  To see that in action just look at the `README.md.eex` file of this package.
+  To see that in action just look at the [`README.md.eex`](README.md.eex) file of this package and compare
+  with what you are reading here.
 
 
-  Example:
+  Example Template:
 
       Some text
       <%= xtra.functiondoc("M.shiny_function/2") %>
@@ -71,8 +71,12 @@ be found at [https://hexdocs.pm/extractly](https://hexdocs.pm/extractly).
 
 ## Author
 
-Copyright © 2018,9 Robert Dober, robert.dober@gmail.com, Dave Thomas, The Pragmatic Programmers
+Copyright © 2018,9 Robert Dober, robert.dober@gmail.com,
+
+Dave Thomas, The Pragmatic Programmers
 @/+pragdave,  dave@pragprog.com
+
+The idea of this code and its base is extracted (oh yeah) from Dave Thomas' [Earmark](https://github.com/pragdave/earmark) package.
 
 # LICENSE
 

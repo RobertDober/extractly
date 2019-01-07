@@ -21,10 +21,11 @@ defmodule Mix.Tasks.Xtra do
 
     Thusly hexdoc and Github will always be synchronized.
 
-    To see that in action just look at the `README.md.eex` file of this package.
+    To see that in action just look at the [`README.md.eex`](README.md.eex) file of this package and compare
+    with what you are reading here.
 
 
-    Example:
+    Example Template:
 
         Some text
         <%= xtra.functiondoc("M.shiny_function/2") %>

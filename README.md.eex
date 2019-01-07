@@ -1,6 +1,5 @@
 # Extractly
 
-
 <%= xtra.moduledoc "Mix.Tasks.Xtra" %>
 
 <%= xtra.moduledoc "Mix.Tasks.Xtra.Help" %>
@@ -26,8 +25,12 @@ be found at [https://hexdocs.pm/extractly](https://hexdocs.pm/extractly).
 
 ## Author
 
-Copyright © 2018,9 Robert Dober, robert.dober@gmail.com, Dave Thomas, The Pragmatic Programmers
+Copyright © 2018,9 Robert Dober, robert.dober@gmail.com,
+
+Dave Thomas, The Pragmatic Programmers
 @/+pragdave,  dave@pragprog.com
+
+The idea of this code and its base is extracted (oh yeah) from Dave Thomas' [Earmark](https://github.com/pragdave/earmark) package.
 
 # LICENSE
 
