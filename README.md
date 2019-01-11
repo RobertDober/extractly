@@ -2,11 +2,9 @@
 
 [![Build Status](https://travis-ci.org/RobertDober/extractly.svg?branch=master)](https://travis-ci.org/RobertDober/extractly)
 [![Coverage Status](https://coveralls.io/repos/github/RobertDober/extractly/badge.svg?branch=master)](https://coveralls.io/github/RobertDober/extractly?branch=master)
-<!-- 
 [![Hex.pm](https://img.shields.io/hexpm/v/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dw/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dt/extractly.svg)](https://hex.pm/packages/extractly)
--->
 
 
 

@@ -4,11 +4,9 @@ defmodule Extractly.MixProject do
   @version "0.1.0"
 
   @description """
-  Extractly, extract hexdocs from sources into Eex templates with the `mix xtra` task.
+  Extractly `mix xtra` task to render `EEx` templates with easy access to hexdocs.
 
   The Extractly module gives easy access to Elixir metainformation of the application using the extractly package, notably, module and function documentation.
-
-  The `mix xtra` task renders `EEx` modules with the `Extractly` module available (also as binding `xtra`).
   """
 
 
