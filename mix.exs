@@ -1,7 +1,7 @@
 defmodule Extractly.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.1"
 
   @description """
   Extractly `mix xtra` task to render `EEx` templates with easy access to hexdocs.
