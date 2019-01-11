@@ -1,5 +1,13 @@
 # Extractly
 
+[![Build Status](https://travis-ci.org/RobertDober/extractly.svg?branch=master)](https://travis-ci.org/RobertDober/extractly)
+<!-- 
+[![Hex.pm](https://img.shields.io/hexpm/v/extractly.svg)](https://hex.pm/packages/extractly)
+[![Hex.pm](https://img.shields.io/hexpm/dw/extractly.svg)](https://hex.pm/packages/extractly)
+[![Hex.pm](https://img.shields.io/hexpm/dt/extractly.svg)](https://hex.pm/packages/extractly)
+-->
+
+
 
 ##  Mix task to Transform EEx templates in the context of the `Extractly` module.
 
@@ -72,11 +80,6 @@ be found at [https://hexdocs.pm/extractly](https://hexdocs.pm/extractly).
 ## Author
 
 Copyright © 2018,9 Robert Dober, robert.dober@gmail.com,
-
-Dave Thomas, The Pragmatic Programmers
-@/+pragdave,  dave@pragprog.com
-
-The idea of this code and its base is extracted (oh yeah) from Dave Thomas' [Earmark](https://github.com/pragdave/earmark) package.
 
 # LICENSE
 
