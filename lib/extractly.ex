@@ -17,10 +17,24 @@ defmodule Extractly do
           ] |> Enum.join("\\n")
   """
   def functiondoc(name) do
-    {module, function_name, arity} = _parse_function_name(name)
+    {module, function_name, arity} = _parse_entity_name(name)
 
     case Code.ensure_loaded(module) do
-      {:module, _} -> _get_functiondoc(module, function_name, arity)
+      {:module, _} -> _get_entity_doc(module, function_name, arity, :function)
+      _ -> nil
+    end
+  end
+
+  @doc """
+    Returns docstring of a macro (or nil)
+
+    Same naming convention for macros as for functions.
+  """
+  def macrodoc(name) do
+    {module, macro_name, arity} = _parse_entity_name(name)
+
+    case Code.ensure_loaded(module) do
+      {:module, _} -> _get_entity_doc(module, macro_name, arity, :macro)
       _ -> nil
     end
   end
@@ -40,11 +54,10 @@ defmodule Extractly do
     end
   end
 
-
-  defp _get_functiondoc(module, function_name, arity) do
+  defp _get_entity_doc(module, name, arity, entity_type) do
     if function_exported?(module, :__info__, 1) do
       {:docs_v1, _, :elixir, _, _, _, docs} = Code.fetch_docs(module)
-      Enum.find_value(docs, &_find_function_doc(&1, function_name, arity))
+      Enum.find_value(docs, &_find_entity_doc(&1, name, arity, entity_type))
     end
   end
 
@@ -62,21 +75,21 @@ defmodule Extractly do
       # end
     end
   end
-
+  
   @doc false
   def version do
     :application.ensure_started(:extractly)
     with {:ok, version} = :application.get_key(:extractly, :vsn), do: to_string(version)
   end
 
-  defp _find_function_doc(doctuple, function_name, arity) do
+  defp _find_entity_doc(doctuple, function_name, arity, entity_type) do
     case doctuple do
-      {{:function, ^function_name, ^arity}, _anno, _sign, %{"en" => doc}, _metadata} -> doc
+      {{^entity_type, ^function_name, ^arity}, _anno, _sign, %{"en" => doc}, _metadata} -> doc
       _ -> nil
     end
   end
 
-  defp _parse_function_name(name) do
+  defp _parse_entity_name(name) do
     names = String.split(name, ".")
     [func | modules] = Enum.reverse(names)
     module = ["Elixir" | Enum.reverse(modules)] |> Enum.join(".") |> String.to_atom()

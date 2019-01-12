@@ -59,4 +59,18 @@ defmodule ExtractlyTest do
       assert mdoc == nil
     end
   end
+
+  describe "macros" do
+    test "docs are found too" do
+      mdoc = Extractly.macrodoc "Support.Macro.i_am_a_macro/0"
+
+      assert mdoc == "I am a macro"
+    end
+
+    test "unless they do not exist" do
+      mdoc = Extractly.macrodoc "Support.Macro.but_i_am_not/1"
+
+      assert mdoc == nil
+    end
+  end
 end
