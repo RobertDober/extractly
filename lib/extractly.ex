@@ -1,8 +1,33 @@
 defmodule Extractly do
+
+  alias Extractly.DoNotEdit
+
   @moduledoc """
     Provide easy access to information inside the templates rendered by `mix xtra`
   """
 
+  @doc """
+    Emits a comment including a message not to edit the created file, as it will be recreated from this template.
+
+    It is a convenience to include this into your templates as follows
+
+            <%= xtra.do_not_edit_warning %>
+
+    or I18n'ed
+
+            <%= xtra.do_not_edit_warning, lang: :fr %>
+
+    If you are not generating html or markdown the comment can be parametrized
+
+            <%= xtra.do_not_edit_warning, comment_start: "-- ", comment_end: "" %>
+
+    If you want to include the name of the source template use the `include_name: true` option, so
+    a call may be as complex as:
+
+            <%= xtra.do_not_edit_warning, comment_start: "-- ", comment_end: "", include_name: true, lang: :it %>
+
+  """
+  def do_not_edit_warning( opts \\ []), do: DoNotEdit.warning(opts)
 
   @doc """
     Returns docstring of a function (or nil)
