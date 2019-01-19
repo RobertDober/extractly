@@ -13,6 +13,8 @@ defmodule Mix.Tasks.Xtra do
 
     1. Access to the `Extractly` module (available as binding `xtra` too)
 
+    1. Access to the name of the rendered template with the `template` binding
+
     The `Extractly` module gives easy access to Elixir metainformation of the application using
     the `extractly` package, notably, _module_  and _function_ documentation.
 
@@ -70,7 +72,7 @@ defmodule Mix.Tasks.Xtra do
   defp _process_template(options, template) do
     Mix.Task.run("compile")
     output_fn = Map.get(options, :output, String.replace(template, ~r{\.eex\z}, ""))
-    output = EEx.eval_file(template, [xtra: Extractly])
+    output = EEx.eval_file(template, [xtra: Extractly, template: template])
     case File.write(output_fn, output) do
       :ok -> :ok
       {:error, posix_reason} = x -> IO.puts :stderr, "Cannot write to #{output_fn}, reason: #{:file.format_error(posix_reason)}"

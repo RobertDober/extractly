@@ -21,10 +21,10 @@ defmodule Extractly do
 
             <%= xtra.do_not_edit_warning, comment_start: "-- ", comment_end: "" %>
 
-    If you want to include the name of the source template use the `include_name: true` option, so
+    If you want to include the name of the source template use `template: template` option, so
     a call may be as complex as:
 
-            <%= xtra.do_not_edit_warning, comment_start: "-- ", comment_end: "", include_name: true, lang: :it %>
+            <%= xtra.do_not_edit_warning, comment_start: "-- ", comment_end: "", template: template, lang: :it %>
 
   """
   def do_not_edit_warning( opts \\ []), do: DoNotEdit.warning(opts)
