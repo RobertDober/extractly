@@ -14,5 +14,7 @@ otp_release:
   - 21.0
   - 21.2
 
+env:
+  - MIX_ENV=test
+
 script: mix coveralls.travis
-  - "MIX_ENV=test mix do deps.get, test && mix compile && mix coveralls.travis"
