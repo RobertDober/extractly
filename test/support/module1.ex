@@ -13,7 +13,7 @@ defmodule Support.Module1 do
   @doc false
   def sample, do: 42
 
-  def missing(a), do: 2*a
+  def missing(a), do: add(2*a, 1)
 
   defp add(a, b), do: a+b
 end
