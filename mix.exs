@@ -1,7 +1,8 @@
 defmodule Extractly.MixProject do
   use Mix.Project
 
-  @version "0.1.4"
+  @version "0.1.5"
+  @url "https://github.com/robertdober/extractly"
 
   @description """
   Extractly `mix xtra` task to render `EEx` templates with easy access to hexdocs.
@@ -28,7 +29,8 @@ defmodule Extractly.MixProject do
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test
-      ]
+      ],
+      aliases: [docs: &build_docs/1]
     ]
   end
 
@@ -44,7 +46,6 @@ defmodule Extractly.MixProject do
     [
       {:excoveralls, "~> 0.10.3", only: :test},
       {:dialyxir, "~> 1.0.0-rc", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.19.2", only: [:dev, :test], runtime: false}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
     ]
@@ -71,4 +72,26 @@ defmodule Extractly.MixProject do
       }
     ]
   end
+
+
+  @prerequisites """
+  run `mix escript.install hex ex_doc` and adjust `PATH` accordingly
+  """
+  defp build_docs(_) do
+    Mix.Task.run("compile")
+    ex_doc = Path.join(Mix.Local.path_for(:escript), "ex_doc")
+    Mix.shell.info("Using escript: #{ex_doc} to build the docs")
+
+    unless File.exists?(ex_doc) do
+      raise "cannot build docs because escript for ex_doc is not installed, make sure to \n#{@prerequisites}"
+    end
+
+    args = ["Earmark", @version, Mix.Project.compile_path()]
+    opts = ~w[--main Earmark --source-ref v#{@version} --source-url #{@url}]
+
+    Mix.shell.info("Running: #{ex_doc} #{inspect(args ++ opts)}")
+    System.cmd(ex_doc, args ++ opts)
+    Mix.shell.info("Docs built successfully")
+  end
+
 end

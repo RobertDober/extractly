@@ -5,6 +5,6 @@ defmodule Extractly.Cli do
   """
   @doc "entry to the CLI, proxies to the mix task `mix xtra`"
   def main(argv) do
-    Mix.Task.Xtra.run(argv)
+    Mix.Tasks.Xtra.run(argv)
   end
 end

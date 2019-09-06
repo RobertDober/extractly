@@ -70,7 +70,11 @@ defmodule Mix.Tasks.Xtra do
       else: IO.puts(:stderr, "Template #{template} does not exist")
 
   defp _process_template(options, template) do
-    Mix.Task.run("compile")
+    try do
+      Mix.Task.run("compile")
+    rescue
+      UndefinedFunctionError -> nil
+    end
     output_fn = Map.get(options, :output, String.replace(template, ~r{\.eex\z}, ""))
     output = EEx.eval_file(template, [xtra: Extractly, template: template])
     case File.write(output_fn, output) do
