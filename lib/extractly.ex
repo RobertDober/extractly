@@ -2,6 +2,8 @@ defmodule Extractly do
 
   alias Extractly.DoNotEdit
 
+  import Extractly.Helpers
+
   @moduledoc """
     Provide easy access to information inside the templates rendered by `mix xtra`
   """
@@ -40,13 +42,37 @@ defmodule Extractly do
           "      Extractly.moduledoc(\\"Extractly\\")",
           ""
           ] |> Enum.join("\\n")
-  """
-  def functiondoc(name) do
-    {module, function_name, arity} = _parse_entity_name(name)
 
-    case Code.ensure_loaded(module) do
-      {:module, _} -> _get_entity_doc(module, function_name, arity, :function)
-      _ -> nil
+    We can also pass a list of functions to get their docs concatenated
+
+        iex(2)> out = Extractly.functiondoc(["Extractly.moduledoc/1", "Extactly.functiondoc/2"])
+        ...(2)> # as we are inside the docstring we required we would need a quine to check for the
+        ...(2)> # output, let us simplify
+        ...(2)> String.split(out, "\\n") |> Enum.take(5)
+        [ "  Returns docstring of a module (or nil)",
+          "  Ex:",
+          "", 
+          "      Extractly.moduledoc(\\"Extractly\\")",
+          ""]
+
+  """
+  def functiondoc(name, opts \\ [])
+  def functiondoc(names, opts) when is_list(names) do
+    prefix = 
+      case Keyword.get(opts, :module) do
+        nil         -> ""
+        module_name -> "#{module_name}."
+      end
+
+    names
+    |> Enum.map(&functiondoc("#{prefix}#{&1}", opts))
+    |> Enum.join
+  end
+  def functiondoc(name, opts) when is_binary(name) do
+    headline = fdoc_headline(name, opts)
+    case _functiondoc(name) do
+      nil -> nil
+      doc -> headline <> doc
     end
   end
 
@@ -75,6 +101,16 @@ defmodule Extractly do
 
     case Code.ensure_loaded(module) do
       {:module, _} -> _get_moduledoc(module)
+      _ -> nil
+    end
+  end
+
+
+  defp _functiondoc(name) do
+    {module, function_name, arity} = _parse_entity_name(name)
+
+    case Code.ensure_loaded(module) do
+      {:module, _} -> _get_entity_doc(module, function_name, arity, :function)
       _ -> nil
     end
   end

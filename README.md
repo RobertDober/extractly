@@ -67,6 +67,46 @@ and any changes you make in this file will most likely be lost
 
 
 
+### API
+
+### Extractly.moduledoc/1
+
+  Returns docstring of a module (or nil)
+  Ex:
+
+      Extractly.moduledoc("Extractly")
+### Extractly.functiondoc/2
+
+  Returns docstring of a function (or nil)
+  Ex:
+
+      iex(1)> Extractly.functiondoc("Extractly.moduledoc/1")
+      [ "  Returns docstring of a module (or nil)",
+        "  Ex:",
+        "", 
+        "      Extractly.moduledoc(\"Extractly\")",
+        ""
+        ] |> Enum.join("\n")
+
+  We can also pass a list of functions to get their docs concatenated
+
+      iex(2)> out = Extractly.functiondoc(["Extractly.moduledoc/1", "Extactly.functiondoc/2"])
+      ...(2)> # as we are inside the docstring we required we would need a quine to check for the
+      ...(2)> # output, let us simplify
+      ...(2)> String.split(out, "\n") |> Enum.take(5)
+      [ "  Returns docstring of a module (or nil)",
+        "  Ex:",
+        "", 
+        "      Extractly.moduledoc(\"Extractly\")",
+        ""]
+
+### Extractly.macrodoc/1
+
+  Returns docstring of a macro (or nil)
+
+  Same naming convention for macros as for functions.
+
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
