@@ -10,9 +10,10 @@ defmodule Mix.Tasks.Xtra.Help do
 
   #### Options:
 
-      --help     Prints short help information to stdout and exits.
-      --version  Prints the current version to stdout and exits.
-      --verbose  Prints additional output to stderr
+      --help | -h     Prints short help information to stdout and exits.
+      --quiet | -q    No output to stdout or stderr
+      --version | -v  Prints the current version to stdout and exits.
+      --verbose       Prints additional output to stderr
 
       --output filename
                 The name of the file the rendered template is written to, defaults to the templates'

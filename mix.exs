@@ -1,7 +1,7 @@
 defmodule Extractly.MixProject do
   use Mix.Project
 
-  @version "0.1.5"
+  @version "0.1.4"
   @url "https://github.com/robertdober/extractly"
 
   @description """
@@ -86,8 +86,8 @@ defmodule Extractly.MixProject do
       raise "cannot build docs because escript for ex_doc is not installed, make sure to \n#{@prerequisites}"
     end
 
-    args = ["Earmark", @version, Mix.Project.compile_path()]
-    opts = ~w[--main Earmark --source-ref v#{@version} --source-url #{@url}]
+    args = ["Extractly", @version, Mix.Project.compile_path()]
+    opts = ~w[--main Extractly --source-ref v#{@version} --source-url #{@url}]
 
     Mix.shell.info("Running: #{ex_doc} #{inspect(args ++ opts)}")
     System.cmd(ex_doc, args ++ opts)

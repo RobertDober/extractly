@@ -37,14 +37,21 @@ defmodule Mix.Tasks.Xtra do
   """
 
   @strict [
-    version: :boolean,
     help: :boolean,
+    quiet: :boolean,
+    version: :boolean,
     output: :string
+  ]
+
+  @aliases [
+    h: :help,
+    q: :quiet,
+    v: :version
   ]
 
   @impl true
   def run(args) do
-    OptionParser.parse(args, strict: @strict)
+    OptionParser.parse(args, strict: @strict, aliases: @aliases)
     |> _mappify_options()
     |> _run()
   end
@@ -67,7 +74,7 @@ defmodule Mix.Tasks.Xtra do
   defp _process(options, template), do:
     if File.exists?(template),
       do: _process_template(options, template),
-      else: IO.puts(:stderr, "Template #{template} does not exist")
+      else: _puts_err("Template #{template} does not exist", options)
 
   defp _process_template(options, template) do
     try do
@@ -79,7 +86,7 @@ defmodule Mix.Tasks.Xtra do
     output = EEx.eval_file(template, [xtra: Extractly, template: template])
     case File.write(output_fn, output) do
       :ok -> :ok
-      {:error, posix_reason} = x -> IO.puts :stderr, "Cannot write to #{output_fn}, reason: #{:file.format_error(posix_reason)}"
+      {:error, posix_reason} = x -> _puts_err("Cannot write to #{output_fn}, reason: #{:file.format_error(posix_reason)}", options)
                                     x
     end
   end
@@ -88,11 +95,16 @@ defmodule Mix.Tasks.Xtra do
   defp _run({options, [], []}), do: _process(options, "README.md.eex")
   defp _run({options, [template | args], []}) do
     unless Enum.empty?(args) do
-      IO.puts :stderr, "WARNING: Spourious templates #{inspect args} are ignored"
+      _puts_err("WARNING: Spourious templates #{inspect args} are ignored", options)
     end
     _process(options, template)
   end
-  defp _run({_, _, errors}), do:
-    IO.puts(:stderr, "ERROR: Illegal arguments: #{inspect(errors)}\n\nTry `mix xtra.help` for, well, some help")
+  defp _run({options, _, errors}), do:
+    _puts_err("ERROR: Illegal arguments: #{inspect(errors)}\n\nTry `mix xtra.help` for, well, some help", options)
+
+  defp _puts_err(message, options)
+  defp _puts_err(_, %{quiet: true}), do: nil
+  defp _puts_err(message, _), do: IO.puts(:stderr, message)
+
 
 end
