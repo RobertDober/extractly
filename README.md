@@ -51,9 +51,10 @@ and any changes you make in this file will most likely be lost
 
 #### Options:
 
-    --help     Prints short help information to stdout and exits.
-    --version  Prints the current version to stdout and exits.
-    --verbose  Prints additional output to stderr
+    --help | -h     Prints short help information to stdout and exits.
+    --quiet | -q    No output to stdout or stderr
+    --version | -v  Prints the current version to stdout and exits.
+    --verbose       Prints additional output to stderr
 
     --output filename
               The name of the file the rendered template is written to, defaults to the templates'
@@ -74,7 +75,7 @@ by adding `extractly` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:extractly, "~> 0.1.3"}
+    {:extractly, "~> 0.1.4"}
   ]
 end
 ```
