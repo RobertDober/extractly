@@ -69,10 +69,14 @@ and any changes you make in this file will most likely be lost
 
 ### API
 
+### Extractly.moduledoc/1
+
   Returns docstring of a module (or nil)
   Ex:
 
       Extractly.moduledoc("Extractly")
+### Extractly.functiondoc/2
+
   Returns docstring of a function (or nil)
   Ex:
 
@@ -95,6 +99,8 @@ and any changes you make in this file will most likely be lost
         "", 
         "      Extractly.moduledoc(\"Extractly\")",
         ""]
+
+### Extractly.macrodoc/1
 
   Returns docstring of a macro (or nil)
 

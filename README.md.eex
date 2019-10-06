@@ -16,7 +16,7 @@
 
 ### API
 
-<%= xtra.functiondoc ["moduledoc/1", "functiondoc/2", "macrodoc/1"], module: "Extractly" %>
+<%= xtra.functiondoc ["moduledoc/1", "functiondoc/2", "macrodoc/1"], module: "Extractly", headline: 3 %>
 
 ## Installation
 
