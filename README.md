@@ -100,6 +100,21 @@ and any changes you make in this file will most likely be lost
         "      Extractly.moduledoc(\"Extractly\")",
         ""]
 
+  If all the functions are in the same module the following form can be used
+
+      iex(3)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly")
+      ...(3)> String.split(out, "\n") |> hd()
+      "  Returns docstring of a module (or nil)"
+
+  However it is convenient to add a markdown headline before each functiondoc, especially in these cases,
+  it can be done by indicating the `headline: level` option
+
+      iex(4)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly", headline: 2)
+      ...(4)> String.split(out, "\n") |> Enum.take(3)
+      [ "## Extractly.moduledoc/1",
+        "",
+        "  Returns docstring of a module (or nil)"]
+
 ### Extractly.macrodoc/1
 
   Returns docstring of a macro (or nil)
