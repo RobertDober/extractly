@@ -14,6 +14,10 @@
 <%= xtra.moduledoc "Mix.Tasks.Xtra.Help" %>
 
 
+### API
+
+<%= xtra.functiondoc ["moduledoc/1", "functiondoc/2", "macrodoc/1"], module: "Extractly" %>
+
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed

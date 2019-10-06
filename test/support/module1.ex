@@ -10,6 +10,12 @@ defmodule Support.Module1 do
     :world
   end
 
+  @doc """
+  Other functiondoc
+  """
+  def other do
+  end
+
   @doc false
   def sample, do: 42
 
