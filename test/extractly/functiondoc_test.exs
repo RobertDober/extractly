@@ -58,6 +58,20 @@ defmodule Extractly.FunctiondocTest do
 
       assert fdoc == "#### Support.Module1.hello/0\n\nFunctiondoc of Module1.hello\n#### Support.Module1.other/0\n\nOther functiondoc\n"
     end
+
+    test "and we can use :all to get all public functions" do
+      fdoc = Extractly.functiondoc( :all, module: "Support.Module1", headline: 4 )
+
+      assert fdoc == "#### Support.Module1.hello/0\n\nFunctiondoc of Module1.hello\n#### Support.Module1.other/0\n\nOther functiondoc\n"
+    end
+  end
+
+  describe "no such module" do
+    test "and we can use :all to get... an error message " do
+      fdoc = Extractly.functiondoc( :all, module: "Support.DoesNotExist", headline: 4 )
+
+      assert fdoc == "<!-- ERROR cannot load module `Elixir.Support.DoesNotExist' -->"
+    end
   end
 
 end

@@ -70,8 +70,22 @@ defmodule Extractly do
           "",
           "  Returns docstring of a module (or nil)"]
 
+    Often times we are interested by **all** public functiondocs...
+
+        iex(5)> out = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
+        ...(5)> String.split(out, "\\n") |> Enum.take(3)
+        [ "## Extractly.do_not_edit_warning/1",
+          "",
+          "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
+
   """
   def functiondoc(name, opts \\ [])
+  def functiondoc(:all, opts) do
+    case Keyword.get(opts, :module) do
+        nil         -> "<!-- ERROR: No module given for `functiondoc(:all, ...)` -->"
+        module_name -> _all_functiondocs( module_name, opts )
+    end
+  end
   def functiondoc(names, opts) when is_list(names) do
     prefix = 
       case Keyword.get(opts, :module) do
@@ -119,8 +133,41 @@ defmodule Extractly do
       _ -> nil
     end
   end
+  
+  @doc false
+  def version do
+    :application.ensure_started(:extractly)
+    with {:ok, version} = :application.get_key(:extractly, :vsn), do: to_string(version)
+  end
 
 
+  defp _all_functiondocs(module_name, opts) do
+    module = "Elixir.#{module_name}" |> String.to_atom
+    case Code.ensure_loaded(module) do
+      {:module, _} ->  _get_functiondocs(module, opts)
+      _ -> "<!-- ERROR cannot load module `#{module}' -->" 
+    end
+  end
+
+  defp _extract_functiondoc(function_info)
+  defp _extract_functiondoc({_, _, _, doc_map, _}) when is_map(doc_map) do
+    case doc_map do
+      %{"en" => docstring} -> docstring 
+      _ -> nil
+    end
+  end
+  defp _extract_functiondoc(_) do
+    nil
+  end
+
+  defp _extract_functiondoc_with_headline({{_, function_name, function_arity},_,_,_,_}=function_info, opts) do
+    module_name = Keyword.get(opts, :module)
+    full_name = "#{module_name}.#{function_name}/#{function_arity}"
+    case _extract_functiondoc(function_info) do
+      nil -> nil
+      doc -> fdoc_headline( full_name, opts ) <> doc
+    end
+  end
   defp _functiondoc(name) do
     {module, function_name, arity} = _parse_entity_name(name)
 
@@ -137,6 +184,18 @@ defmodule Extractly do
     end
   end
 
+  defp _get_functiondocs(module, opts) do
+    if function_exported?(module, :__info__, 1) do
+      {:docs_v1, _, :elixir, _, _, _, docs} = Code.fetch_docs(module)
+
+      docs 
+      |> Enum.map(&_extract_functiondoc_with_headline(&1, opts))
+      |> Enum.join
+    else
+      "<!-- ERROR cannot access #{module.__info__/1} -->"
+    end
+  end
+
   defp _get_moduledoc(module) do
     if function_exported?(module, :__info__, 1) do
       case Code.fetch_docs(module) do
@@ -150,12 +209,6 @@ defmodule Extractly do
       #     _ -> nil
       # end
     end
-  end
-  
-  @doc false
-  def version do
-    :application.ensure_started(:extractly)
-    with {:ok, version} = :application.get_key(:extractly, :vsn), do: to_string(version)
   end
 
   defp _find_entity_doc(doctuple, function_name, arity, entity_type) do
