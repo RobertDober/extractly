@@ -1,7 +1,7 @@
 defmodule Extractly.MixProject do
   use Mix.Project
 
-  @version "0.1.5"
+  @version "0.1.6"
   @url "https://github.com/robertdober/extractly"
 
   @description """
