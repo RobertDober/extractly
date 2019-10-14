@@ -77,6 +77,7 @@ defmodule Extractly.MixProject do
   @prerequisites """
   run `mix escript.install hex ex_doc` and adjust `PATH` accordingly
   """
+  @modulename "Extractly"
   defp build_docs(_) do
     Mix.Task.run("compile")
     ex_doc = Path.join(Mix.Local.path_for(:escript), "ex_doc")
@@ -86,8 +87,8 @@ defmodule Extractly.MixProject do
       raise "cannot build docs because escript for ex_doc is not installed, make sure to \n#{@prerequisites}"
     end
 
-    args = ["Extractly", @version, Mix.Project.compile_path()]
-    opts = ~w[--main Extractly --source-ref v#{@version} --source-url #{@url}]
+    args = [@modulename, @version, Mix.Project.compile_path()]
+    opts = ~w[--main #{@modulename} --source-ref v#{@version} --source-url #{@url}]
 
     Mix.shell.info("Running: #{ex_doc} #{inspect(args ++ opts)}")
     System.cmd(ex_doc, args ++ opts)
