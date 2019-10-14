@@ -115,6 +115,14 @@ and any changes you make in this file will most likely be lost
         "",
         "  Returns docstring of a module (or nil)"]
 
+  Often times we are interested by **all** public functiondocs...
+
+      iex(5)> out = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
+      ...(5)> String.split(out, "\n") |> Enum.take(3)
+      [ "## Extractly.do_not_edit_warning/1",
+        "",
+        "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
+
 ### Extractly.macrodoc/1
 
   Returns docstring of a macro (or nil)
@@ -130,7 +138,7 @@ by adding `extractly` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:extractly, "~> 0.1.4"}
+    {:extractly, "~> 0.1.5"}
   ]
 end
 ```
