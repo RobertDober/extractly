@@ -1,7 +1,7 @@
 defmodule Extractly.MixProject do
   use Mix.Project
 
-  @version "0.1.6"
+  @version "0.2.0"
   @url "https://github.com/robertdober/extractly"
 
   @description """
@@ -15,7 +15,7 @@ defmodule Extractly.MixProject do
     [
       app: :extractly,
       version: @version,
-      elixir: "~> 1.7",
+      elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       escript: [main_module: Extractly.Cli],
       start_permanent: Mix.env() == :prod,
@@ -37,7 +37,7 @@ defmodule Extractly.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: []
+      extra_applications: [:eex]
     ]
   end
 
@@ -80,7 +80,7 @@ defmodule Extractly.MixProject do
   @modulename "Extractly"
   defp build_docs(_) do
     Mix.Task.run("compile")
-    ex_doc = Path.join(Mix.Local.path_for(:escript), "ex_doc")
+    ex_doc = Path.join(Mix.path_for(:escripts), "ex_doc")
     Mix.shell.info("Using escript: #{ex_doc} to build the docs")
 
     unless File.exists?(ex_doc) do

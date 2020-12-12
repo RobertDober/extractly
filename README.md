@@ -6,7 +6,7 @@ It has been generated from the template `README.md.eex` by Extractly (https://gi
 and any changes you make in this file will most likely be lost
 -->
 
-[![Build Status](https://travis-ci.org/RobertDober/extractly.svg?branch=master)](https://travis-ci.org/RobertDober/extractly)
+![CI](https://github.com/RobertDober/extractly/workflows/CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/RobertDober/extractly/badge.svg?branch=master)](https://coveralls.io/github/RobertDober/extractly?branch=master)
 [![Hex.pm](https://img.shields.io/hexpm/v/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dw/extractly.svg)](https://hex.pm/packages/extractly)
@@ -138,7 +138,7 @@ by adding `extractly` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:extractly, "~> 0.1.5"}
+    {:extractly, "~> 0.2.0"}
   ]
 end
 ```
@@ -150,7 +150,7 @@ be found at [https://hexdocs.pm/extractly](https://hexdocs.pm/extractly).
 
 ## Author
 
-Copyright © 2018,9 Robert Dober, robert.dober@gmail.com,
+Copyright © 2018,9, 2020,1 Robert Dober, robert.dober@gmail.com,
 
 # LICENSE
 
