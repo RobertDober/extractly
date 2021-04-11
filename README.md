@@ -6,7 +6,7 @@ It has been generated from the template `README.md.eex` by Extractly (https://gi
 and any changes you make in this file will most likely be lost
 -->
 
-![CI](https://github.com/RobertDober/extractly/workflows/CI/badge.svg)
+[![CI](https://github.com/RobertDober/extractly/workflows/CI/badge.svg)](https://github.com/RobertDober/extractly/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/RobertDober/extractly/badge.svg?branch=master)](https://coveralls.io/github/RobertDober/extractly?branch=master)
 [![Hex.pm](https://img.shields.io/hexpm/v/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dw/extractly.svg)](https://hex.pm/packages/extractly)
@@ -80,7 +80,7 @@ and any changes you make in this file will most likely be lost
   Returns docstring of a function (or nil)
   Ex:
 
-      iex(1)> Extractly.functiondoc("Extractly.moduledoc/1")
+      iex(0)> Extractly.functiondoc("Extractly.moduledoc/1")
       [ "  Returns docstring of a module (or nil)",
         "  Ex:",
         "", 
@@ -90,10 +90,10 @@ and any changes you make in this file will most likely be lost
 
   We can also pass a list of functions to get their docs concatenated
 
-      iex(2)> out = Extractly.functiondoc(["Extractly.moduledoc/1", "Extactly.functiondoc/2"])
-      ...(2)> # as we are inside the docstring we required we would need a quine to check for the
-      ...(2)> # output, let us simplify
-      ...(2)> String.split(out, "\n") |> Enum.take(5)
+      iex(1)> out = Extractly.functiondoc(["Extractly.moduledoc/1", "Extactly.functiondoc/2"])
+      ...(1)> # as we are inside the docstring we required we would need a quine to check for the
+      ...(1)> # output, let us simplify
+      ...(1)> String.split(out, "\n") |> Enum.take(5)
       [ "  Returns docstring of a module (or nil)",
         "  Ex:",
         "", 
@@ -102,23 +102,23 @@ and any changes you make in this file will most likely be lost
 
   If all the functions are in the same module the following form can be used
 
-      iex(3)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly")
-      ...(3)> String.split(out, "\n") |> hd()
+      iex(2)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly")
+      ...(2)> String.split(out, "\n") |> hd()
       "  Returns docstring of a module (or nil)"
 
   However it is convenient to add a markdown headline before each functiondoc, especially in these cases,
   it can be done by indicating the `headline: level` option
 
-      iex(4)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly", headline: 2)
-      ...(4)> String.split(out, "\n") |> Enum.take(3)
+      iex(3)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly", headline: 2)
+      ...(3)> String.split(out, "\n") |> Enum.take(3)
       [ "## Extractly.moduledoc/1",
         "",
         "  Returns docstring of a module (or nil)"]
 
   Often times we are interested by **all** public functiondocs...
 
-      iex(5)> out = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
-      ...(5)> String.split(out, "\n") |> Enum.take(3)
+      iex(4)> out = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
+      ...(4)> String.split(out, "\n") |> Enum.take(3)
       [ "## Extractly.do_not_edit_warning/1",
         "",
         "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
@@ -128,6 +128,19 @@ and any changes you make in this file will most likely be lost
   Returns docstring of a macro (or nil)
 
   Same naming convention for macros as for functions.
+### Extractly.task/2
+
+Returns the output of a mix task
+  Ex:
+
+    iex(5)> Extractly.task("cmd", ~W[echo 42])
+    "42\n"
+
+    iex(6)> Extractly.task("no-such-mix-task") |> String.replace(~r{\n.*}, "")
+    "***Error, the following output was produced wih error code 1"
+
+    iex(7)> Extractly.task("cmd", ~W[no-such-shell-cmd])
+    "***Error, the following output was produced wih error code 1\nsh: no-such-shell-cmd: command not found\n"
 
 
 ## Installation
@@ -138,7 +151,7 @@ by adding `extractly` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:extractly, "~> 0.2.0"}
+    {:extractly, "~> 0.3.0"}
   ]
 end
 ```

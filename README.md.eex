@@ -2,7 +2,7 @@
 
 <%= xtra.do_not_edit_warning template: template %>
 
-![CI](https://github.com/RobertDober/extractly/workflows/CI/badge.svg)
+[![CI](https://github.com/RobertDober/extractly/workflows/CI/badge.svg)](https://github.com/RobertDober/extractly/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/RobertDober/extractly/badge.svg?branch=master)](https://coveralls.io/github/RobertDober/extractly?branch=master)
 [![Hex.pm](https://img.shields.io/hexpm/v/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dw/extractly.svg)](https://hex.pm/packages/extractly)
@@ -16,7 +16,7 @@
 
 ### API
 
-<%= xtra.functiondoc ["moduledoc/1", "functiondoc/2", "macrodoc/1"], module: "Extractly", headline: 3 %>
+<%= xtra.functiondoc ["moduledoc/1", "functiondoc/2", "macrodoc/1", "task/2"], module: "Extractly", headline: 3 %>
 
 ## Installation
 
@@ -38,7 +38,7 @@ be found at [https://hexdocs.pm/extractly](https://hexdocs.pm/extractly).
 
 ## Author
 
-Copyright © 2018,9, 2020,1 Robert Dober, robert.dober@gmail.com,
+Copyright © 20[18-21] Robert Dober, robert.dober@gmail.com,
 
 # LICENSE
 

@@ -11,12 +11,12 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
     strategy:
       matrix:
         otp: ['21.3', '22.2', '23.0', '23.1.4']
-        elixir: ['1.10.0', '1.10.3', '1.11.1', '1.11.2']
+        elixir: ['1.10.0', '1.10.3', '1.11.1', '1.11.2', '1.11.3']
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-elixir@v1

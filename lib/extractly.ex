@@ -35,7 +35,7 @@ defmodule Extractly do
     Returns docstring of a function (or nil)
     Ex:
 
-        iex(1)> Extractly.functiondoc("Extractly.moduledoc/1")
+        iex(0)> Extractly.functiondoc("Extractly.moduledoc/1")
         [ "  Returns docstring of a module (or nil)",
           "  Ex:",
           "", 
@@ -45,10 +45,10 @@ defmodule Extractly do
 
     We can also pass a list of functions to get their docs concatenated
 
-        iex(2)> out = Extractly.functiondoc(["Extractly.moduledoc/1", "Extactly.functiondoc/2"])
-        ...(2)> # as we are inside the docstring we required we would need a quine to check for the
-        ...(2)> # output, let us simplify
-        ...(2)> String.split(out, "\\n") |> Enum.take(5)
+        iex(1)> out = Extractly.functiondoc(["Extractly.moduledoc/1", "Extactly.functiondoc/2"])
+        ...(1)> # as we are inside the docstring we required we would need a quine to check for the
+        ...(1)> # output, let us simplify
+        ...(1)> String.split(out, "\\n") |> Enum.take(5)
         [ "  Returns docstring of a module (or nil)",
           "  Ex:",
           "", 
@@ -57,23 +57,23 @@ defmodule Extractly do
 
     If all the functions are in the same module the following form can be used
 
-        iex(3)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly")
-        ...(3)> String.split(out, "\\n") |> hd()
+        iex(2)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly")
+        ...(2)> String.split(out, "\\n") |> hd()
         "  Returns docstring of a module (or nil)"
 
     However it is convenient to add a markdown headline before each functiondoc, especially in these cases,
     it can be done by indicating the `headline: level` option
 
-        iex(4)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly", headline: 2)
-        ...(4)> String.split(out, "\\n") |> Enum.take(3)
+        iex(3)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly", headline: 2)
+        ...(3)> String.split(out, "\\n") |> Enum.take(3)
         [ "## Extractly.moduledoc/1",
           "",
           "  Returns docstring of a module (or nil)"]
 
     Often times we are interested by **all** public functiondocs...
 
-        iex(5)> out = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
-        ...(5)> String.split(out, "\\n") |> Enum.take(3)
+        iex(4)> out = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
+        ...(4)> String.split(out, "\\n") |> Enum.take(3)
         [ "## Extractly.do_not_edit_warning/1",
           "",
           "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
@@ -134,6 +134,21 @@ defmodule Extractly do
     end
   end
   
+  @doc """
+  Returns the output of a mix task
+    Ex:
+
+      iex(5)> Extractly.task("cmd", ~W[echo 42])
+      "42\\n"
+  """
+  def task(task, args \\ [])
+  def task(task, args) do
+    case System.cmd("mix", [task | args]) do
+      {output, 0} -> output
+      {output, error} -> "***Error, the following output was produced wih error code #{error}\n#{output}"
+    end
+  end
+
   @doc false
   def version do
     :application.ensure_started(:extractly)

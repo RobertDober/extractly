@@ -1,7 +1,7 @@
 defmodule Extractly.MixProject do
   use Mix.Project
 
-  @version "0.2.0"
+  @version "0.3.0"
   @url "https://github.com/robertdober/extractly"
 
   @description """
@@ -96,3 +96,4 @@ defmodule Extractly.MixProject do
   end
 
 end
+#  SPDX-License-Identifier: Apache-2.0
