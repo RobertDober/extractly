@@ -1,3 +1,9 @@
+# v0.3.0 2021-04-11
+
+- [#008 Add mix xtract.task for capturing mix task output](https://github.com/RobertDober/extractly/issues/8)
+
+- Removed obsolete TravisCI build task
+
 # v0.2.0 2020-12-13
 
 No functional changes but
