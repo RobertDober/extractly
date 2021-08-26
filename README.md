@@ -6,8 +6,9 @@ It has been generated from the template `README.md.eex` by Extractly (https://gi
 and any changes you make in this file will most likely be lost
 -->
 
-[![CI](https://github.com/RobertDober/extractly/workflows/CI/badge.svg)](https://github.com/RobertDober/extractly/workflows/ci.yml)
-[![Coverage Status](https://coveralls.io/repos/github/RobertDober/extractly/badge.svg?branch=master)](https://coveralls.io/github/RobertDober/extractly?branch=master)
+
+[![CI](https://github.com/RobertDober/extractly/actions/workflows/ci.yml/badge.svg)](https://github.com/RobertDober/extractly/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/RobertDober/extractly/badge.svg?branch=main)](https://coveralls.io/github/RobertDober/extractly?branch=main)
 [![Hex.pm](https://img.shields.io/hexpm/v/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dw/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dt/extractly.svg)](https://hex.pm/packages/extractly)
@@ -136,12 +137,6 @@ Returns the output of a mix task
     iex(5)> Extractly.task("cmd", ~W[echo 42])
     "42\n"
 
-    iex(6)> Extractly.task("no-such-mix-task") |> String.replace(~r{\n.*}, "")
-    "***Error, the following output was produced wih error code 1"
-
-    iex(7)> Extractly.task("cmd", ~W[no-such-shell-cmd])
-    "***Error, the following output was produced wih error code 1\nsh: no-such-shell-cmd: command not found\n"
-
 
 ## Installation
 
@@ -151,7 +146,7 @@ by adding `extractly` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:extractly, "~> 0.3.0"}
+    {:extractly, "~> 0.3.1"}
   ]
 end
 ```
@@ -163,7 +158,7 @@ be found at [https://hexdocs.pm/extractly](https://hexdocs.pm/extractly).
 
 ## Author
 
-Copyright © 2018,9, 2020,1 Robert Dober, robert.dober@gmail.com,
+Copyright © 20[18-21] Robert Dober, robert.dober@gmail.com,
 
 # LICENSE
 

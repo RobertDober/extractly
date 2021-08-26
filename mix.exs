@@ -15,7 +15,7 @@ defmodule Extractly.MixProject do
     [
       app: :extractly,
       version: @version,
-      elixir: "~> 1.10",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       escript: [main_module: Extractly.Cli],
       start_permanent: Mix.env() == :prod,
