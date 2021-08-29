@@ -38,7 +38,7 @@ defmodule Extractly do
         iex(0)> Extractly.functiondoc("Extractly.moduledoc/1")
         [ "  Returns docstring of a module (or nil)",
           "  Ex:",
-          "", 
+          "",
           "      Extractly.moduledoc(\\"Extractly\\")",
           ""
           ] |> Enum.join("\\n")
@@ -51,7 +51,7 @@ defmodule Extractly do
         ...(1)> String.split(out, "\\n") |> Enum.take(5)
         [ "  Returns docstring of a module (or nil)",
           "  Ex:",
-          "", 
+          "",
           "      Extractly.moduledoc(\\"Extractly\\")",
           ""]
 
@@ -87,7 +87,7 @@ defmodule Extractly do
     end
   end
   def functiondoc(names, opts) when is_list(names) do
-    prefix = 
+    prefix =
       case Keyword.get(opts, :module) do
         nil         -> ""
         module_name -> "#{module_name}."
@@ -133,13 +133,16 @@ defmodule Extractly do
       _ -> nil
     end
   end
-  
-  @doc """
+
+  @doc ~S"""
   Returns the output of a mix task
     Ex:
 
       iex(5)> Extractly.task("cmd", ~W[echo 42])
       "42\\n"
+
+      iex(0)> Extractly.task("xxx")
+      "***Error, the following output was produced wih error code 1\nCompiling 1 file (.ex)\n"
   """
   def task(task, args \\ [])
   def task(task, args) do
@@ -160,14 +163,14 @@ defmodule Extractly do
     module = "Elixir.#{module_name}" |> String.to_atom
     case Code.ensure_loaded(module) do
       {:module, _} ->  _get_functiondocs(module, opts)
-      _ -> "<!-- ERROR cannot load module `#{module}' -->" 
+      _ -> "<!-- ERROR cannot load module `#{module}' -->"
     end
   end
 
   defp _extract_functiondoc(function_info)
   defp _extract_functiondoc({_, _, _, doc_map, _}) when is_map(doc_map) do
     case doc_map do
-      %{"en" => docstring} -> docstring 
+      %{"en" => docstring} -> docstring
       _ -> nil
     end
   end
@@ -203,7 +206,7 @@ defmodule Extractly do
     if function_exported?(module, :__info__, 1) do
       {:docs_v1, _, :elixir, _, _, _, docs} = Code.fetch_docs(module)
 
-      docs 
+      docs
       |> Enum.map(&_extract_functiondoc_with_headline(&1, opts))
       |> Enum.join
     else

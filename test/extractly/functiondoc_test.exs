@@ -2,9 +2,8 @@ defmodule Extractly.FunctiondocTest do
   use ExUnit.Case
 
   import Support.Random, only: [random_string: 0]
-  
-  describe "no such doc or function" do 
 
+  describe "no such doc or function" do
     test "undocumented public function" do
       fdoc = Extractly.functiondoc "Support.Module1.sample/0"
 
@@ -28,7 +27,6 @@ defmodule Extractly.FunctiondocTest do
 
       assert fdoc == nil
     end
-    
   end
 
   describe "found for public functions" do
@@ -40,7 +38,6 @@ defmodule Extractly.FunctiondocTest do
   end
 
   describe "multiple functions" do
-
     test "can return two" do
       fdoc = Extractly.functiondoc ["Support.Module2.function/0", "Support.Module1.hello/0"]
 
@@ -75,3 +72,4 @@ defmodule Extractly.FunctiondocTest do
   end
 
 end
+#  SPDX-License-Identifier: Apache-2.0
