@@ -83,7 +83,7 @@ defmodule Extractly do
   def functiondoc(:all, opts) do
     case Keyword.get(opts, :module) do
         nil         -> "<!-- ERROR: No module given for `functiondoc(:all, ...)` -->"
-        module_name -> _all_functiondocs( module_name, opts )
+        module_name -> _all_functiondocs(module_name, opts) |> _postprocess(opts)
     end
   end
   def functiondoc(names, opts) when is_list(names) do
@@ -96,12 +96,13 @@ defmodule Extractly do
     names
     |> Enum.map(&functiondoc("#{prefix}#{&1}", opts))
     |> Enum.join
+    |> _postprocess(opts)
   end
   def functiondoc(name, opts) when is_binary(name) do
     headline = fdoc_headline(name, opts)
     case _functiondoc(name) do
       nil -> nil
-      doc -> headline <> doc
+      doc -> headline <> (doc |> _postprocess(opts))
     end
   end
 
@@ -110,11 +111,11 @@ defmodule Extractly do
 
     Same naming convention for macros as for functions.
   """
-  def macrodoc(name) do
+  def macrodoc(name, opts\\[]) do
     {module, macro_name, arity} = _parse_entity_name(name)
 
     case Code.ensure_loaded(module) do
-      {:module, _} -> _get_entity_doc(module, macro_name, arity, :macro)
+      {:module, _} -> _get_entity_doc(module, macro_name, arity, :macro) |> _postprocess(opts)
       _ -> nil
     end
   end
@@ -125,11 +126,11 @@ defmodule Extractly do
 
         Extractly.moduledoc("Extractly")
   """
-  def moduledoc(name) do
+  def moduledoc(name, opts \\ []) do
     module = String.replace(name, ~r{\A(?:Elixir\.)?}, "Elixir.") |> String.to_atom
 
     case Code.ensure_loaded(module) do
-      {:module, _} -> _get_moduledoc(module)
+      {:module, _} -> _get_moduledoc(module) |> _postprocess(opts)
       _ -> nil
     end
   end
@@ -152,7 +153,9 @@ defmodule Extractly do
     end
   end
 
-  @doc false
+  @doc """
+  A convenience method to access this libraries version
+  """
   def version do
     :application.ensure_started(:extractly)
     with {:ok, version} = :application.get_key(:extractly, :vsn), do: to_string(version)
@@ -244,5 +247,12 @@ defmodule Extractly do
     function_name = String.to_atom(function_name)
     {arity, _} = Integer.parse(arity)
     {module, function_name, arity}
+  end
+
+  defp _postprocess(input, opts) do
+    case Keyword.get(opts, :wrap_code_blocks) do
+      nil -> input
+      lang -> wrap_code_blocks(input, lang)
+    end
   end
 end
