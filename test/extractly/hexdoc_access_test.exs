@@ -3,8 +3,6 @@ defmodule ExtractlyTest do
 
   import Support.Random, only: [random_string: 0]
 
-  doctest Extractly
-
   describe "module doc" do
     test "finds it if present" do
       mdoc = Extractly.moduledoc "Support.Module1"

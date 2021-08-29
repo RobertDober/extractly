@@ -17,7 +17,6 @@ defmodule Test.Support.DoctestModule do
       iex(0)> Function Code
       ...(0)> call()
       result
-
   """
   def fun do
   end

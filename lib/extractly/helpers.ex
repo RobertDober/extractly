@@ -29,7 +29,7 @@ defmodule Extractly.Helpers do
 
   @delim "```"
   @empty ~r{\A \s* \z}x
-  @iex   ~r{\A \s{4,} (?: iex | \.\.\. ) \( \d+ \) > }x
+  @iex   ~r[\A \s{4,} (?: iex | \.\.\. ) \( \d+ \) \> ]x
   defp _wrap(state, lines, lang, result)
   defp _wrap(:inner, [], _, result), do: [@delim | result]
   defp _wrap(_, [], _, result), do: result
@@ -47,7 +47,7 @@ defmodule Extractly.Helpers do
       _wrap_from_blank(line, rest, lang, result)
     end
   end
-  def _wrap(:inner, [line|rest], lang, result) do
+  defp _wrap(:inner, [line|rest], lang, result) do
     if Regex.match?(@empty, line) do
       _wrap(:blank, rest, lang, [line, @delim | result])
     else
@@ -56,7 +56,7 @@ defmodule Extractly.Helpers do
   end
 
   defp _wrap_from_blank(line, rest, lang, result) do
-    if Regex.match(@iex, line) do
+    if Regex.match?(@iex, line) do
       _wrap(:inner, rest, lang, [line, "#{@delim}#{lang}" | result])
     else
       _wrap(:start, rest, lang, [line|result])

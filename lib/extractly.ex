@@ -31,52 +31,63 @@ defmodule Extractly do
   """
   def do_not_edit_warning( opts \\ []), do: DoNotEdit.warning(opts)
 
-  @doc """
+  @doc ~S"""
     Returns docstring of a function (or nil)
     Ex:
 
-        iex(0)> Extractly.functiondoc("Extractly.moduledoc/1")
-        [ "  Returns docstring of a module (or nil)",
-          "  Ex:",
-          "",
-          "      Extractly.moduledoc(\\"Extractly\\")",
-          ""
-          ] |> Enum.join("\\n")
+        iex(0)> Extractly.functiondoc("Extractly.moduledoc/2") 
+        ...(0)> |> String.split("\n") |> Enum.take(3)
+        ["  Returns docstring of a module (or nil)", "  Ex:", ""]
 
     We can also pass a list of functions to get their docs concatenated
 
-        iex(1)> out = Extractly.functiondoc(["Extractly.moduledoc/1", "Extactly.functiondoc/2"])
-        ...(1)> # as we are inside the docstring we required we would need a quine to check for the
-        ...(1)> # output, let us simplify
-        ...(1)> String.split(out, "\\n") |> Enum.take(5)
+        iex(1)> out = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
+        ...(1)> String.split(out, "\n") |> Enum.take(5)
         [ "  Returns docstring of a module (or nil)",
           "  Ex:",
           "",
-          "      Extractly.moduledoc(\\"Extractly\\")",
+          "      Extractly.moduledoc(\"Extractly\")",
           ""]
 
     If all the functions are in the same module the following form can be used
 
-        iex(2)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly")
-        ...(2)> String.split(out, "\\n") |> hd()
+        iex(2)> out = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
+        ...(2)> String.split(out, "\n") |> hd()
         "  Returns docstring of a module (or nil)"
 
     However it is convenient to add a markdown headline before each functiondoc, especially in these cases,
     it can be done by indicating the `headline: level` option
 
-        iex(3)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly", headline: 2)
-        ...(3)> String.split(out, "\\n") |> Enum.take(3)
-        [ "## Extractly.moduledoc/1",
+        iex(3)> Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
+        ...(3)> |> String.split("\n") |> Enum.take(3)
+        [ "## Extractly.moduledoc/2",
           "",
           "  Returns docstring of a module (or nil)"]
 
     Often times we are interested by **all** public functiondocs...
 
         iex(4)> out = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
-        ...(4)> String.split(out, "\\n") |> Enum.take(3)
+        ...(4)> String.split(out, "\n") |> Enum.take(3)
         [ "## Extractly.do_not_edit_warning/1",
           "",
           "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
+
+    We can specify a language to wrap indented code blocks into ` ```elixir\n...\n``` `
+
+    Here is an example
+
+        iex(0)> Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
+        ...(0)> |> String.split("\n") |> Enum.take(10)
+        [ "  Returns docstring of a function (or nil)",
+          "  Ex:",
+          "",
+          "```elixir",
+          "      iex(0)> Extractly.functiondoc(\"Extractly.moduledoc/2\") ",
+          "      ...(0)> |> String.split(\"\\n\") |> Enum.take(3)",
+          "      [\"  Returns docstring of a module (or nil)\", \"  Ex:\", \"\"]",
+          "```",
+          "",
+          "  We can also pass a list of functions to get their docs concatenated"]
 
   """
   def functiondoc(name, opts \\ [])
@@ -140,10 +151,10 @@ defmodule Extractly do
     Ex:
 
       iex(5)> Extractly.task("cmd", ~W[echo 42])
-      "42\\n"
+      "42\n"
 
-      iex(0)> Extractly.task("xxx")
-      "***Error, the following output was produced wih error code 1\nCompiling 1 file (.ex)\n"
+      iex(0)> Extractly.task("xxx") |> String.split("\n")|> hd()
+      "***Error, the following output was produced wih error code 1"
   """
   def task(task, args \\ [])
   def task(task, args) do
