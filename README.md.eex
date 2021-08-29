@@ -10,14 +10,14 @@
 [![Hex.pm](https://img.shields.io/hexpm/dt/extractly.svg)](https://hex.pm/packages/extractly)
 
 
-<%= xtra.moduledoc "Mix.Tasks.Xtra" %>
+<%= xtra.moduledoc "Mix.Tasks.Xtra", wrap_code_blocks: "elixir" %>
 
-<%= xtra.moduledoc "Mix.Tasks.Xtra.Help" %>
+<%= xtra.moduledoc "Mix.Tasks.Xtra.Help", wrap_code_blocks: "elixir" %>
 
 
 ### API
 
-<%= xtra.functiondoc ["moduledoc/1", "functiondoc/2", "macrodoc/1", "task/2"], module: "Extractly", headline: 3 %>
+<%= xtra.functiondoc ["moduledoc/1", "functiondoc/2", "macrodoc/1", "task/2"], module: "Extractly", headline: 3, wrap_code_blocks: "elixir" %>
 
 ## Installation
 

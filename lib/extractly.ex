@@ -31,63 +31,74 @@ defmodule Extractly do
   """
   def do_not_edit_warning( opts \\ []), do: DoNotEdit.warning(opts)
 
-  @doc """
+  @doc ~S"""
     Returns docstring of a function (or nil)
     Ex:
 
-        iex(0)> Extractly.functiondoc("Extractly.moduledoc/1")
-        [ "  Returns docstring of a module (or nil)",
-          "  Ex:",
-          "", 
-          "      Extractly.moduledoc(\\"Extractly\\")",
-          ""
-          ] |> Enum.join("\\n")
+        iex(0)> Extractly.functiondoc("Extractly.moduledoc/2") 
+        ...(0)> |> String.split("\n") |> Enum.take(3)
+        ["  Returns docstring of a module (or nil)", "  Ex:", ""]
 
     We can also pass a list of functions to get their docs concatenated
 
-        iex(1)> out = Extractly.functiondoc(["Extractly.moduledoc/1", "Extactly.functiondoc/2"])
-        ...(1)> # as we are inside the docstring we required we would need a quine to check for the
-        ...(1)> # output, let us simplify
-        ...(1)> String.split(out, "\\n") |> Enum.take(5)
+        iex(1)> out = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
+        ...(1)> String.split(out, "\n") |> Enum.take(5)
         [ "  Returns docstring of a module (or nil)",
           "  Ex:",
-          "", 
-          "      Extractly.moduledoc(\\"Extractly\\")",
+          "",
+          "      Extractly.moduledoc(\"Extractly\")",
           ""]
 
     If all the functions are in the same module the following form can be used
 
-        iex(2)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly")
-        ...(2)> String.split(out, "\\n") |> hd()
+        iex(2)> out = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
+        ...(2)> String.split(out, "\n") |> hd()
         "  Returns docstring of a module (or nil)"
 
     However it is convenient to add a markdown headline before each functiondoc, especially in these cases,
     it can be done by indicating the `headline: level` option
 
-        iex(3)> out = Extractly.functiondoc(["moduledoc/1", "functiondoc/2"], module: "Extractly", headline: 2)
-        ...(3)> String.split(out, "\\n") |> Enum.take(3)
-        [ "## Extractly.moduledoc/1",
+        iex(3)> Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
+        ...(3)> |> String.split("\n") |> Enum.take(3)
+        [ "## Extractly.moduledoc/2",
           "",
           "  Returns docstring of a module (or nil)"]
 
     Often times we are interested by **all** public functiondocs...
 
         iex(4)> out = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
-        ...(4)> String.split(out, "\\n") |> Enum.take(3)
+        ...(4)> String.split(out, "\n") |> Enum.take(3)
         [ "## Extractly.do_not_edit_warning/1",
           "",
           "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
+
+    We can specify a language to wrap indented code blocks into ` ```elixir\n...\n``` `
+
+    Here is an example
+
+        iex(0)> Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
+        ...(0)> |> String.split("\n") |> Enum.take(10)
+        [ "  Returns docstring of a function (or nil)",
+          "  Ex:",
+          "",
+          "```elixir",
+          "      iex(0)> Extractly.functiondoc(\"Extractly.moduledoc/2\") ",
+          "      ...(0)> |> String.split(\"\\n\") |> Enum.take(3)",
+          "      [\"  Returns docstring of a module (or nil)\", \"  Ex:\", \"\"]",
+          "```",
+          "",
+          "  We can also pass a list of functions to get their docs concatenated"]
 
   """
   def functiondoc(name, opts \\ [])
   def functiondoc(:all, opts) do
     case Keyword.get(opts, :module) do
         nil         -> "<!-- ERROR: No module given for `functiondoc(:all, ...)` -->"
-        module_name -> _all_functiondocs( module_name, opts )
+        module_name -> _all_functiondocs(module_name, opts) |> _postprocess(opts)
     end
   end
   def functiondoc(names, opts) when is_list(names) do
-    prefix = 
+    prefix =
       case Keyword.get(opts, :module) do
         nil         -> ""
         module_name -> "#{module_name}."
@@ -96,12 +107,13 @@ defmodule Extractly do
     names
     |> Enum.map(&functiondoc("#{prefix}#{&1}", opts))
     |> Enum.join
+    |> _postprocess(opts)
   end
   def functiondoc(name, opts) when is_binary(name) do
     headline = fdoc_headline(name, opts)
     case _functiondoc(name) do
       nil -> nil
-      doc -> headline <> doc
+      doc -> headline <> (doc |> _postprocess(opts))
     end
   end
 
@@ -110,11 +122,11 @@ defmodule Extractly do
 
     Same naming convention for macros as for functions.
   """
-  def macrodoc(name) do
+  def macrodoc(name, opts\\[]) do
     {module, macro_name, arity} = _parse_entity_name(name)
 
     case Code.ensure_loaded(module) do
-      {:module, _} -> _get_entity_doc(module, macro_name, arity, :macro)
+      {:module, _} -> _get_entity_doc(module, macro_name, arity, :macro) |> _postprocess(opts)
       _ -> nil
     end
   end
@@ -125,21 +137,24 @@ defmodule Extractly do
 
         Extractly.moduledoc("Extractly")
   """
-  def moduledoc(name) do
+  def moduledoc(name, opts \\ []) do
     module = String.replace(name, ~r{\A(?:Elixir\.)?}, "Elixir.") |> String.to_atom
 
     case Code.ensure_loaded(module) do
-      {:module, _} -> _get_moduledoc(module)
+      {:module, _} -> _get_moduledoc(module) |> _postprocess(opts)
       _ -> nil
     end
   end
-  
-  @doc """
+
+  @doc ~S"""
   Returns the output of a mix task
     Ex:
 
       iex(5)> Extractly.task("cmd", ~W[echo 42])
-      "42\\n"
+      "42\n"
+
+      iex(0)> Extractly.task("xxx") |> String.split("\n")|> hd()
+      "***Error, the following output was produced wih error code 1"
   """
   def task(task, args \\ [])
   def task(task, args) do
@@ -149,7 +164,9 @@ defmodule Extractly do
     end
   end
 
-  @doc false
+  @doc """
+  A convenience method to access this libraries version
+  """
   def version do
     :application.ensure_started(:extractly)
     with {:ok, version} = :application.get_key(:extractly, :vsn), do: to_string(version)
@@ -160,14 +177,14 @@ defmodule Extractly do
     module = "Elixir.#{module_name}" |> String.to_atom
     case Code.ensure_loaded(module) do
       {:module, _} ->  _get_functiondocs(module, opts)
-      _ -> "<!-- ERROR cannot load module `#{module}' -->" 
+      _ -> "<!-- ERROR cannot load module `#{module}' -->"
     end
   end
 
   defp _extract_functiondoc(function_info)
   defp _extract_functiondoc({_, _, _, doc_map, _}) when is_map(doc_map) do
     case doc_map do
-      %{"en" => docstring} -> docstring 
+      %{"en" => docstring} -> docstring
       _ -> nil
     end
   end
@@ -203,7 +220,7 @@ defmodule Extractly do
     if function_exported?(module, :__info__, 1) do
       {:docs_v1, _, :elixir, _, _, _, docs} = Code.fetch_docs(module)
 
-      docs 
+      docs
       |> Enum.map(&_extract_functiondoc_with_headline(&1, opts))
       |> Enum.join
     else
@@ -241,5 +258,12 @@ defmodule Extractly do
     function_name = String.to_atom(function_name)
     {arity, _} = Integer.parse(arity)
     {module, function_name, arity}
+  end
+
+  defp _postprocess(input, opts) do
+    case Keyword.get(opts, :wrap_code_blocks) do
+      nil -> input
+      lang -> wrap_code_blocks(input, lang)
+    end
   end
 end
