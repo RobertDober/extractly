@@ -165,7 +165,7 @@ by adding `extractly` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:extractly, "~> 0.4.0"}
+    {:extractly, "~> 0.4.1"}
   ]
 end
 ```

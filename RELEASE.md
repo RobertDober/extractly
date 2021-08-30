@@ -1,3 +1,7 @@
+# v0.4.1 2021-08-30
+
+- [#012 Add directives](https://github.com/RobertDober/extractly/issues/12)
+
 # v0.4.0 2021-08-29
 
 - [#010 Added `wrap_code_block: ...` param to extraction functions](https://github.com/RobertDober/extractly/issues/10)
