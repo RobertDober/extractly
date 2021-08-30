@@ -1,3 +1,7 @@
+# v0.4.0 2021-08-29
+
+- [#010 Added `wrap_code_block: ...` param to extraction functions](https://github.com/RobertDober/extractly/issues/10)
+
 # v0.3.0 2021-04-11
 
 - [#008 Add mix xtract.task for capturing mix task output](https://github.com/RobertDober/extractly/issues/8)
