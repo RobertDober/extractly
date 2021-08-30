@@ -261,9 +261,11 @@ defmodule Extractly do
   end
 
   defp _postprocess(input, opts) do
-    case Keyword.get(opts, :wrap_code_blocks) do
-      nil -> input
-      lang -> wrap_code_blocks(input, lang)
+    wrap? = Keyword.get(opts, :wrap_code_blocks)
+    input_ = Extractly.Directives.process(input, !!wrap?)
+    case wrap? do
+      nil -> input_
+      lang -> wrap_code_blocks(input_, lang)
     end
   end
 end
