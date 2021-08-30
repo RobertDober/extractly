@@ -260,6 +260,8 @@ defmodule Extractly do
     {module, function_name, arity}
   end
 
+  defp _postprocess(input, opts)
+  defp _postprocess(nil, _opts), do: nil
   defp _postprocess(input, opts) do
     wrap? = Keyword.get(opts, :wrap_code_blocks)
     input_ = Extractly.Directives.process(input, !!wrap?)

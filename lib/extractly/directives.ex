@@ -18,7 +18,7 @@ defmodule Extractly.Directives do
   defp _copy([], result), do: result
   defp _copy([line|rest], result) do
     cond do
-      String.match?(line, @ignore_line_directive) |> IO.inspect(label: line) -> _copy(rest, result)
+      String.match?(line, @ignore_line_directive) -> _copy(rest, result)
       String.match?(line, @resume_processing_directive) -> _copy(rest, result) # A warning might be in order
       String.match?(line, @stop_processing_directive) -> result
       String.match?(line, @suspend_processing_directive) -> _skip(rest, result)
