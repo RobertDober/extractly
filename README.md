@@ -8,7 +8,7 @@ and any changes you make in this file will most likely be lost
 
 
 [![CI](https://github.com/RobertDober/extractly/actions/workflows/ci.yml/badge.svg)](https://github.com/RobertDober/extractly/actions/workflows/ci.yml)
-[![Coverage Status](https://coveralls.io/repos/github/RobertDober/extractly/badge.svg?branch=main)](https://coveralls.io/github/RobertDober/extractly?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/RobertDober/extractly/badge.svg?branch=master)](https://coveralls.io/github/RobertDober/extractly?branch=master)
 [![Hex.pm](https://img.shields.io/hexpm/v/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dw/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dt/extractly.svg)](https://hex.pm/packages/extractly)
