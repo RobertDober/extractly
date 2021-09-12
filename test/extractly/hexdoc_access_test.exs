@@ -19,9 +19,9 @@ defmodule ExtractlyTest do
     end
 
     test "does not find it if moduledoc is absent" do
-      mdoc = moduledoc "Support.Module2"
+      mdoc = Extractly.moduledoc "Support.Module2"
 
-      assert mdoc == nil
+      assert mdoc == {:error, "module Support.Module2 does not have a moduledoc"}
     end
   end
 

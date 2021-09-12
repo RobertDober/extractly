@@ -11,4 +11,5 @@ defmodule Test.Support.Helper do
     {:ok, result} = Extractly.moduledoc(name, opts)
     result
   end
+
 end

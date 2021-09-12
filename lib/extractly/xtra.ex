@@ -42,26 +42,24 @@ defmodule Extractly.Xtra do
   @doc ~S"""
   Wraps call to `Extractly.functiondoc` as described above 
 
-      iex(0)> functiondoc(["Support.Module2.function/0", "Support.Module1.hello/0"])
-      "A function\nA nice one\nFunctiondoc of Module1.hello\n"
+      iex(1)> functiondoc(["Support.Module2.function/0", "Support.Module1.hello/0"])
+      "A function\nA nice one\n\nFunctiondoc of Module1.hello\n"
   """
   def functiondoc(name, opts \\ []) do
-    case Extractly.functiondoc(name, opts) do
-      {:ok, result} -> result
-      {:error, messages} -> _add_errors(messages)
-    end
+    Extractly.functiondoc(name, opts)
+    |> _split_outputs([])
   end
 
   @doc ~S"""
   Wraps call to `Extractly.moduledoc` as described above 
 
-      iex(0)> moduledoc(["Support.Module2"])
-      "Needs to be changed"
+      iex(2)> moduledoc("Support.Module2")
+      "<!-- module Support.Module2 does not have a moduledoc -->"
   """
   def moduledoc(name, opts \\ []) do
     case Extractly.moduledoc(name, opts) do
       {:ok, result} -> result
-      {:error, messages} -> _add_errors(messages)
+      {:error, message} -> _add_error(message)
     end
   end
 
@@ -74,5 +72,15 @@ defmodule Extractly.Xtra do
     messages
     |> Enum.map(&_add_error(&1))
     |> Enum.join("\n")
+  end
+
+  defp _split_outputs(fdoc_tuples, result)
+  defp _split_outputs([], result), do: result |> Enum.reverse |> Enum.join("\n")
+  defp _split_outputs([{:error, message}|rest], result) do
+    _add_error(message)
+    _split_outputs(rest, result)
+  end
+  defp _split_outputs([{:ok, doc}|rest], result) do
+    _split_outputs(rest, [doc|result])
   end
 end

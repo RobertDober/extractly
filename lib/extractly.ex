@@ -36,40 +36,43 @@ defmodule Extractly do
     Ex:
 
         iex(0)> {:ok, lines} = Extractly.functiondoc("Extractly.moduledoc/2") |> hd()
-        ...(0)> |> String.split("\n") |> Enum.take(3)
-        ["  Returns docstring of a module", "  Ex:", ""]
+        ...(0)> lines |> String.split("\n") |> Enum.take(3)
+        ["  Returns docstring of a module (or nil)", "  Ex:", ""]
 
     We can also pass a list of functions to get their docs concatenated
 
-        iex(1)> [{:ok, moduledoc}, {:ok, functiondoc}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
+        iex(1)> [{:ok, moduledoc}, {:error, message}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
         ...(1)> moduledoc |> String.split("\n") |> Enum.take(4)
-        [ "  Returns docstring of a module",
+        [ "  Returns docstring ofaa module",
           "  Ex:",
           "",
-          "      Extractly.moduledoc(\"Extractly\")" ]
+          "      Extractly.moduledoc(\"Extractly\")",
           ""]
-        ...(1)> functiondoc |> String.split "\n") |> Enum.take(2)
-        [ "  Returns docstring of a function",
-          "  Ex:" ]
+        ...(1)> message
+        "Function doc for function Extactly.functiondoc/2 not found"
 
     If all the functions are in the same module the following form can be used
 
-        iex(2)> out = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
+        iex(2)> [{:ok, out}, _] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
         ...(2)> String.split(out, "\n") |> hd()
         "  Returns docstring of a module (or nil)"
 
     However it is convenient to add a markdown headline before each functiondoc, especially in these cases,
     it can be done by indicating the `headline: level` option
 
-        iex(3)> Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
-        ...(3)> |> String.split("\n") |> Enum.take(3)
+        iex(3)> [{:ok, moduledoc}, {:ok, functiondoc}] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
+        ...(3)> moduledoc |> String.split("\n") |> Enum.take(3)
         [ "## Extractly.moduledoc/2",
           "",
-          "  Returns docstring of a module (or nil)"]
+          "  Returns docstring of a module"]
+        ...(3)> functiondoc |> String.split("\n") |> Enum.take(3)
+        [ "## Extractly.functiondoc/2",
+          "",
+          "  Returns docstring of a function"]
 
     Often times we are interested by **all** public functiondocs...
 
-        iex(4)> out = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
+        iex(4)> [{:ok, out}|_] = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
         ...(4)> String.split(out, "\n") |> Enum.take(3)
         [ "## Extractly.do_not_edit_warning/1",
           "",
@@ -79,14 +82,14 @@ defmodule Extractly do
 
     Here is an example
 
-        iex(0)> Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
-        ...(0)> |> String.split("\n") |> Enum.take(10)
-        [ "  Returns docstring of a function (or nil)",
+        iex(0)> [ok: doc] = Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
+        ...(0)> doc |> String.split("\n") |> Enum.take(10)
+        [ "  Returns docstring of a function",
           "  Ex:",
           "",
           "```elixir",
-          "      iex(0)> Extractly.functiondoc(\"Extractly.moduledoc/2\") ",
-          "      ...(0)> |> String.split(\"\\n\") |> Enum.take(3)",
+          "      iex(0)> {:ok, lines} = Extractly.functiondoc(\"Extractly.moduledoc/2\") |> hd()",
+          "      ...(0)> lines |> String.split(\"\\n\") |> Enum.take(3)",
           "      [\"  Returns docstring of a module (or nil)\", \"  Ex:\", \"\"]",
           "```",
           "",
@@ -143,10 +146,15 @@ defmodule Extractly do
     module = String.replace(name, ~r{\A(?:Elixir\.)?}, "Elixir.") |> String.to_atom
 
     case Code.ensure_loaded(module) do
-      {:module, _} -> {:ok, _get_moduledoc(module) |> _postprocess(opts)}
+      {:module, _} -> _get_moduledoc(module) |> _postprocess(opts) |> _check_nil_moduledoc(name)
       _ -> {:error, "module not found #{module}"}
     end
   end
+
+  defp _check_nil_moduledoc(moduledoc_or_nil, name)
+  defp _check_nil_moduledoc(nil, name), do: {:error, "module #{name} does not have a moduledoc"}
+  defp _check_nil_moduledoc(false, name), do: {:error, "module #{name} does not have a moduledoc"}
+  defp _check_nil_moduledoc(doc, _name), do: {:ok, doc}
 
   @doc ~S"""
   Returns the output of a mix task
