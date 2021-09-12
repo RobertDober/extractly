@@ -13,7 +13,7 @@ defmodule Mix.Tasks.Xtra.Help do
       --help | -h     Prints short help information to stdout and exits.
       --quiet | -q    No output to stdout or stderr
       --version | -v  Prints the current version to stdout and exits.
-      --verbose       Prints additional output to stderr
+      --verbose | -V  Prints additional output to stderr
 
       --output filename
                 The name of the file the rendered template is written to, defaults to the templates'
@@ -27,7 +27,7 @@ defmodule Mix.Tasks.Xtra.Help do
 
   @impl true
   def run(_args) do
-    IO.puts :stderr, Extractly.moduledoc(to_string(__MODULE__)) 
+    IO.puts :stderr, Extractly.Xtra.moduledoc(to_string(__MODULE__)) 
   end
   
 end

@@ -1,6 +1,6 @@
 defmodule Mix.XtraHelpTest do
   use ExUnit.Case
-  
+
   import ExUnit.CaptureIO
 
   test "prints help text to stderr" do

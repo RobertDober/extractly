@@ -39,5 +39,8 @@ defmodule Test.Extractly.DirectivesTest do
 
     assert result == expected
   end
-  defp fdoc(name), do: functiondoc(name, wrap_code_blocks: "") |> String.split("\n")
+  defp fdoc(name) do
+    [ok: doc] = functiondoc(name, wrap_code_blocks: "") 
+    doc |> String.split("\n")
+  end
 end
