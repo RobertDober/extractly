@@ -70,7 +70,7 @@ defmodule Mix.Tasks.Xtra do
   defp _output(result), do: _output_error(result)
 
   defp _output_error(error_or_not)
-  defp _output_error({:error, message}), do: IO.puts(:stderr, message |> IO.inspect() )
+  defp _output_error({:error, message}), do: IO.puts(:stderr, message)
   defp _output_error(_), do: nil
 
   @help_text """
