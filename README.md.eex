@@ -17,7 +17,7 @@
 
 ### API
 
-<%= xtra.functiondoc ["moduledoc/1", "functiondoc/2", "macrodoc/1", "task/2"], module: "Extractly", headline: 3, wrap_code_blocks: "elixir" %>
+<%= xtra.functiondoc ["moduledoc/2", "functiondoc/2", "macrodoc/2", "task/2"], module: "Extractly", headline: 3, wrap_code_blocks: "elixir" %>
 
 ## Installation
 

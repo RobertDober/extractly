@@ -1,0 +1,6 @@
+
+<%= xtra.moduledoc "DoesNotExist" %>
+
+<%= xtra.functiondoc :all, module: "DoesNotExist" %>
+
+<%= xtra.functiondoc :all, module: "Support.Module1" %>

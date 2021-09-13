@@ -12,13 +12,13 @@ defmodule Test.Extractly.WrapCodeBlocksTest do
     ```
     """
     test "with all" do
-      fdoc = Extractly.functiondoc(:all, module: "Test.Support.DoctestModule", wrap_code_blocks: "elixir")
+      fdoc = functiondoc(:all, module: "Test.Support.DoctestModule")
 
       assert fdoc == @expected
     end
 
     test "with explicit" do
-      fdoc = Extractly.functiondoc("Test.Support.DoctestModule.fun/0", wrap_code_blocks: "elixir")
+      fdoc = functiondoc("Test.Support.DoctestModule.fun/0")
 
       assert fdoc == @expected
     end
@@ -41,11 +41,24 @@ defmodule Test.Extractly.WrapCodeBlocksTest do
     ```
     """
     test "moduledoc with trailing code block" do
-      mdoc = Extractly.moduledoc("Test.Support.DoctestModule", wrap_code_blocks: "elixir")
+      mdoc = moduledoc("Test.Support.DoctestModule")
 
       assert mdoc == @expected
     end
   end
 
+  defp functiondoc(fun, module: mod) do
+    [ok: result] = Extractly.functiondoc(fun, module: mod, wrap_code_blocks: "elixir")
+    result
+  end
+  defp functiondoc(desc) do
+    [ok: result] = Extractly.functiondoc(desc, wrap_code_blocks: "elixir")
+    result
+  end
+
+  defp moduledoc(desc) do
+    {:ok, result} = Extractly.moduledoc(desc, wrap_code_blocks: "elixir")
+    result
+  end
 end
 #  SPDX-License-Identifier: Apache-2.0

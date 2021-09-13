@@ -54,4 +54,40 @@ defmodule Mix.XtraTest do
     end
   end
 
+  describe "capturing output from a complete example" do
+    test "mix of errors (verbose)" do
+      stderr = capture_io(:stderr, fn ->
+        Mix.Tasks.Xtra.run(["--verbose", Path.expand("test/fixtures/mix_of_errors.eex")])
+      end)
+      expected = """
+      *debug* -- moduledoc called for DoesNotExist []
+      *error* -- module not found Elixir.DoesNotExist
+      *debug* -- functiondoc called for all [module: "DoesNotExist"]
+      *error* -- cannot load module `Elixir.DoesNotExist'
+      *debug* -- functiondoc called for all [module: "Support.Module1"]
+      """
+      assert stderr == expected
+    end
+    test "mix of errors (normal)" do
+      stderr = capture_io(:stderr, fn ->
+        Mix.Tasks.Xtra.run([Path.expand("test/fixtures/mix_of_errors.eex")])
+      end)
+      expected = """
+      *error* -- module not found Elixir.DoesNotExist
+      *error* -- cannot load module `Elixir.DoesNotExist'
+      """
+      assert stderr == expected
+    end
+    test "mix of errors (quiet)" do
+      stderr = capture_io(:stderr, fn ->
+        Mix.Tasks.Xtra.run(["--quiet", Path.expand("test/fixtures/mix_of_errors.eex")])
+      end)
+      expected = """
+      *error* -- module not found Elixir.DoesNotExist
+      *error* -- cannot load module `Elixir.DoesNotExist'
+      """
+      assert stderr == expected
+    end
+  end
+
 end
