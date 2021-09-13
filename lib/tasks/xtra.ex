@@ -38,26 +38,42 @@ defmodule Mix.Tasks.Xtra do
 
   @strict [
     help: :boolean,
+    output: :string,
     quiet: :boolean,
+    verbose: :boolean,
     version: :boolean,
-    output: :string
   ]
 
   @aliases [
     h: :help,
     q: :quiet,
-    v: :version
+    v: :version,
+    V: :verbose
   ]
 
   @impl true
   def run(args) do
+    Extractly.Messages.Agent.start_link
     OptionParser.parse(args, strict: @strict, aliases: @aliases)
     |> _mappify_options()
     |> _run()
+    |> _output()
   end
 
   defp _mappify_options({options, args, errors}),
     do: {options |> Enum.into(%{}), args, errors}
+
+  # run returns the options unless an error occurred
+  defp _output(opts_or_error)
+  defp _output(opts) when is_map(opts) do
+    opts
+    |> _severity()
+    |> Extractly.Messages.messages
+    |> Enum.each(&_output_message/1)
+  end
+  defp _output(_), do: nil
+
+  defp _output_message({status, message}), do: IO.puts(:stderr, "*#{status}* -- #{message}")
 
   @help_text """
   mix xtra
@@ -83,9 +99,9 @@ defmodule Mix.Tasks.Xtra do
       UndefinedFunctionError -> nil
     end
     output_fn = Map.get(options, :output, String.replace(template, ~r{\.eex\z}, ""))
-    output = EEx.eval_file(template, [xtra: Extractly, template: template])
+    output = EEx.eval_file(template, [xtra: Extractly.Xtra, template: template, options: options])
     case File.write(output_fn, output) do
-      :ok -> :ok
+      :ok -> options
       {:error, posix_reason} = x -> _puts_err("Cannot write to #{output_fn}, reason: #{:file.format_error(posix_reason)}", options)
                                     x
     end
@@ -106,5 +122,9 @@ defmodule Mix.Tasks.Xtra do
   defp _puts_err(_, %{quiet: true}), do: nil
   defp _puts_err(message, _), do: IO.puts(:stderr, message)
 
+  defp _severity(opts)
+  defp _severity(%{verbose: true}), do: :debug
+  defp _severity(%{quiet: true}), do: :error
+  defp _severity(_), do: :info
 
 end

@@ -55,7 +55,7 @@ and any changes you make in this file will most likely be lost
     --help | -h     Prints short help information to stdout and exits.
     --quiet | -q    No output to stdout or stderr
     --version | -v  Prints the current version to stdout and exits.
-    --verbose       Prints additional output to stderr
+    --verbose | -V  Prints additional output to stderr
 
     --output filename
               The name of the file the rendered template is written to, defaults to the templates'
@@ -70,53 +70,65 @@ and any changes you make in this file will most likely be lost
 
 ### API
 
+### Extractly.moduledoc/2
+
+  Returns docstring of a module
+  Ex:
+
+      Extractly.moduledoc("Extractly")
+
 ### Extractly.functiondoc/2
 
-  Returns docstring of a function (or nil)
+  Returns docstring of a function
   Ex:
 
 ```elixir
-      iex(0)> Extractly.functiondoc("Extractly.moduledoc/2") 
-      ...(0)> |> String.split("\n") |> Enum.take(3)
-      ["  Returns docstring of a module (or nil)", "  Ex:", ""]
+      iex(0)> {:ok, lines} = Extractly.functiondoc("Extractly.moduledoc/2") |> hd()
+      ...(0)> lines |> String.split("\n") |> Enum.take(3)
+      ["  Returns docstring of a module", "  Ex:", ""]
 ```
 
   We can also pass a list of functions to get their docs concatenated
 
 ```elixir
-      iex(1)> out = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
-      ...(1)> String.split(out, "\n") |> Enum.take(5)
-      [ "  Returns docstring of a module (or nil)",
+      iex(1)> [{:ok, moduledoc}, {:error, message}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
+      ...(1)> moduledoc |> String.split("\n") |> Enum.take(4)
+      [ "  Returns docstring of a module",
         "  Ex:",
         "",
-        "      Extractly.moduledoc(\"Extractly\")",
-        ""]
+        "      Extractly.moduledoc(\"Extractly\")"]
+      iex(2)> message
+      "Function doc for function Extactly.functiondoc/2 not found"
 ```
 
   If all the functions are in the same module the following form can be used
 
 ```elixir
-      iex(2)> out = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
-      ...(2)> String.split(out, "\n") |> hd()
-      "  Returns docstring of a module (or nil)"
+      iex(3)> [{:ok, out}, _] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
+      ...(3)> String.split(out, "\n") |> hd()
+      "  Returns docstring of a module"
 ```
 
   However it is convenient to add a markdown headline before each functiondoc, especially in these cases,
   it can be done by indicating the `headline: level` option
 
 ```elixir
-      iex(3)> Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
-      ...(3)> |> String.split("\n") |> Enum.take(3)
+      iex(4)> [{:ok, moduledoc}, {:ok, functiondoc}] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
+      ...(4)> moduledoc |> String.split("\n") |> Enum.take(3)
       [ "## Extractly.moduledoc/2",
         "",
-        "  Returns docstring of a module (or nil)"]
+        "  Returns docstring of a module"]
+      iex(5)> functiondoc |> String.split("\n") |> Enum.take(3)
+      [ "## Extractly.functiondoc/2",
+        "",
+        "  Returns docstring of a function"]
 ```
 
   Often times we are interested by **all** public functiondocs...
 
 ```elixir
-      iex(4)> out = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
-      ...(4)> String.split(out, "\n") |> Enum.take(3)
+      iex(6)> [{:ok, out}|_] = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
+      ...(6)> String.split(out, "\n") |> Enum.take(3)
       [ "## Extractly.do_not_edit_warning/1",
         "",
         "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
@@ -127,19 +139,26 @@ and any changes you make in this file will most likely be lost
   Here is an example
 
 ```elixir
-      iex(0)> Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
-      ...(0)> |> String.split("\n") |> Enum.take(10)
-      [ "  Returns docstring of a function (or nil)",
+      iex(7)> [ok: doc] = Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
+      ...(7)> doc |> String.split("\n") |> Enum.take(10)
+      [ "  Returns docstring of a function",
         "  Ex:",
         "",
         "```elixir",
-        "      iex(0)> Extractly.functiondoc(\"Extractly.moduledoc/2\") ",
-        "      ...(0)> |> String.split(\"\\n\") |> Enum.take(3)",
-        "      [\"  Returns docstring of a module (or nil)\", \"  Ex:\", \"\"]",
+        "      iex(0)> {:ok, lines} = Extractly.functiondoc(\"Extractly.moduledoc/2\") |> hd()",
+        "      ...(0)> lines |> String.split(\"\\n\") |> Enum.take(3)",
+        "      [\"  Returns docstring of a module\", \"  Ex:\", \"\"]",
         "```",
         "",
         "  We can also pass a list of functions to get their docs concatenated"]
 ```
+
+
+### Extractly.macrodoc/2
+
+  Returns docstring of a macro
+
+  Same naming convention for macros as for functions.
 
 ### Extractly.task/2
 
@@ -147,14 +166,19 @@ Returns the output of a mix task
   Ex:
 
 ```elixir
-    iex(5)> Extractly.task("cmd", ~W[echo 42])
+    iex(8)> Extractly.task("cmd", ~W[echo 42])
     "42\n"
 ```
 
 ```elixir
-    iex(0)> Extractly.task("xxx") |> String.split("\n")|> hd()
-    "***Error, the following output was produced wih error code 1"
+    iex(9)> try do
+    ...(9)>   Extractly.task("xxx")
+    ...(9)> rescue
+    ...(9)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
+    ...(9)> end
+    "The following output was produced wih error code 1"
 ```
+
 
 
 ## Installation
@@ -165,7 +189,7 @@ by adding `extractly` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:extractly, "~> 0.4.1"}
+    {:extractly, "~> 0.5.0"}
   ]
 end
 ```

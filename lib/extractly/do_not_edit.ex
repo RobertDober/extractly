@@ -34,15 +34,15 @@ defmodule Extractly.DoNotEdit do
   """
   def warning(opts) do
     lang = Keyword.get(opts, :lang, :en)
-    lang = 
+    lang =
       if Map.has_key?(@warnings, lang) do
         lang
-      else 
+      else
         IO.puts(:stderr, "Language #{lang} is not supported yet, falling back to :en")
         :en
       end
     template = Keyword.get(opts, :template, false)
-    definite = !!template 
+    definite = !!template
     article = @articles[lang][definite]
     comment_start = Keyword.get(opts, :comment_start, "<!--\n")
     comment_end = Keyword.get(opts, :comment_end, "-->")
@@ -65,5 +65,5 @@ defmodule Extractly.DoNotEdit do
   defp message(base, {comment_start, comment_end}, template, article) do
     comment_start <> inner_message(base, template, article) <> comment_end
   end
-  
+
 end
