@@ -1,5 +1,5 @@
 defmodule Extractly.Xtra do
-  import Extractly.Messages, only: [add_message: 1]
+  alias Extractly.Messages, as: M
 
   @moduledoc """
   This wraps `Extractly's` API by putting all messages to be logged to the
@@ -39,6 +39,9 @@ defmodule Extractly.Xtra do
   """
   defdelegate do_not_edit_warning(opts \\ []), to: Extractly
 
+  @doc false
+  defdelegate version, to: Extractly
+
   @doc ~S"""
   Wraps call to `Extractly.functiondoc` as described above 
 
@@ -46,6 +49,7 @@ defmodule Extractly.Xtra do
       "A function\nA nice one\n\nFunctiondoc of Module1.hello\n"
   """
   def functiondoc(name, opts \\ []) do
+    M.add_debug("functiondoc called for #{name} #{inspect opts}")
     Extractly.functiondoc(name, opts)
     |> _split_outputs([])
   end
@@ -57,6 +61,7 @@ defmodule Extractly.Xtra do
       "<!-- module Support.Module2 does not have a moduledoc -->"
   """
   def moduledoc(name, opts \\ []) do
+    M.add_debug("moduledoc called for #{name} #{inspect opts}")
     case Extractly.moduledoc(name, opts) do
       {:ok, result} -> result
       {:error, message} -> _add_error(message)
@@ -64,14 +69,8 @@ defmodule Extractly.Xtra do
   end
 
   defp _add_error(message) do
-    add_message(message)
+    M.add_error(message)
     "<!-- #{message} -->"
-  end
-
-  defp _add_errors(messages) do
-    messages
-    |> Enum.map(&_add_error(&1))
-    |> Enum.join("\n")
   end
 
   defp _split_outputs(fdoc_tuples, result)

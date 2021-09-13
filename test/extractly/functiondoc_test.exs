@@ -2,7 +2,6 @@ defmodule Extractly.FunctiondocTest do
   use ExUnit.Case
 
   import Support.Random, only: [random_string: 0]
-  alias Extractly.Messages
 
   describe "no such doc or function" do
     test "undocumented public function" do

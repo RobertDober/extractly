@@ -9,4 +9,7 @@ defmodule Mix.XtraHelpTest do
     end)
     assert Regex.match?(~r{### Usage:}, stderr)
   end
+
+  test "debugging" do
+  end
 end

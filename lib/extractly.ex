@@ -37,43 +37,42 @@ defmodule Extractly do
 
         iex(0)> {:ok, lines} = Extractly.functiondoc("Extractly.moduledoc/2") |> hd()
         ...(0)> lines |> String.split("\n") |> Enum.take(3)
-        ["  Returns docstring of a module (or nil)", "  Ex:", ""]
+        ["  Returns docstring of a module", "  Ex:", ""]
 
     We can also pass a list of functions to get their docs concatenated
 
         iex(1)> [{:ok, moduledoc}, {:error, message}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
         ...(1)> moduledoc |> String.split("\n") |> Enum.take(4)
-        [ "  Returns docstring ofaa module",
+        [ "  Returns docstring of a module",
           "  Ex:",
           "",
-          "      Extractly.moduledoc(\"Extractly\")",
-          ""]
-        ...(1)> message
+          "      Extractly.moduledoc(\"Extractly\")"]
+        iex(2)> message
         "Function doc for function Extactly.functiondoc/2 not found"
 
     If all the functions are in the same module the following form can be used
 
-        iex(2)> [{:ok, out}, _] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
-        ...(2)> String.split(out, "\n") |> hd()
-        "  Returns docstring of a module (or nil)"
+        iex(3)> [{:ok, out}, _] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
+        ...(3)> String.split(out, "\n") |> hd()
+        "  Returns docstring of a module"
 
     However it is convenient to add a markdown headline before each functiondoc, especially in these cases,
     it can be done by indicating the `headline: level` option
 
-        iex(3)> [{:ok, moduledoc}, {:ok, functiondoc}] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
-        ...(3)> moduledoc |> String.split("\n") |> Enum.take(3)
+        iex(4)> [{:ok, moduledoc}, {:ok, functiondoc}] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
+        ...(4)> moduledoc |> String.split("\n") |> Enum.take(3)
         [ "## Extractly.moduledoc/2",
           "",
           "  Returns docstring of a module"]
-        ...(3)> functiondoc |> String.split("\n") |> Enum.take(3)
+        iex(5)> functiondoc |> String.split("\n") |> Enum.take(3)
         [ "## Extractly.functiondoc/2",
           "",
           "  Returns docstring of a function"]
 
     Often times we are interested by **all** public functiondocs...
 
-        iex(4)> [{:ok, out}|_] = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
-        ...(4)> String.split(out, "\n") |> Enum.take(3)
+        iex(6)> [{:ok, out}|_] = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
+        ...(6)> String.split(out, "\n") |> Enum.take(3)
         [ "## Extractly.do_not_edit_warning/1",
           "",
           "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
@@ -82,15 +81,15 @@ defmodule Extractly do
 
     Here is an example
 
-        iex(0)> [ok: doc] = Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
-        ...(0)> doc |> String.split("\n") |> Enum.take(10)
+        iex(7)> [ok: doc] = Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
+        ...(7)> doc |> String.split("\n") |> Enum.take(10)
         [ "  Returns docstring of a function",
           "  Ex:",
           "",
           "```elixir",
           "      iex(0)> {:ok, lines} = Extractly.functiondoc(\"Extractly.moduledoc/2\") |> hd()",
           "      ...(0)> lines |> String.split(\"\\n\") |> Enum.take(3)",
-          "      [\"  Returns docstring of a module (or nil)\", \"  Ex:\", \"\"]",
+          "      [\"  Returns docstring of a module\", \"  Ex:\", \"\"]",
           "```",
           "",
           "  We can also pass a list of functions to get their docs concatenated"]
@@ -123,7 +122,7 @@ defmodule Extractly do
   end
 
   @doc """
-    Returns docstring of a macro (or nil)
+    Returns docstring of a macro
 
     Same naming convention for macros as for functions.
   """
@@ -137,40 +136,45 @@ defmodule Extractly do
   end
 
   @doc """
-    Returns docstring of a module (or nil)
+    Returns docstring of a module
     Ex:
 
         Extractly.moduledoc("Extractly")
   """
   def moduledoc(name, opts \\ []) do
     module = String.replace(name, ~r{\A(?:Elixir\.)?}, "Elixir.") |> String.to_atom
+    headline = fdoc_headline(name, opts)
 
     case Code.ensure_loaded(module) do
-      {:module, _} -> _get_moduledoc(module) |> _postprocess(opts) |> _check_nil_moduledoc(name)
+      {:module, _} -> _get_moduledoc(module) |> _postprocess(opts) |> _check_nil_moduledoc(name, headline)
       _ -> {:error, "module not found #{module}"}
     end
   end
 
-  defp _check_nil_moduledoc(moduledoc_or_nil, name)
-  defp _check_nil_moduledoc(nil, name), do: {:error, "module #{name} does not have a moduledoc"}
-  defp _check_nil_moduledoc(false, name), do: {:error, "module #{name} does not have a moduledoc"}
-  defp _check_nil_moduledoc(doc, _name), do: {:ok, doc}
+  defp _check_nil_moduledoc(moduledoc_or_nil, name, headline)
+  defp _check_nil_moduledoc(nil, name, _hl), do: {:error, "module #{name} does not have a moduledoc"}
+  defp _check_nil_moduledoc(doc, _name, headline), do: {:ok, headline <> doc}
 
   @doc ~S"""
   Returns the output of a mix task
     Ex:
 
-      iex(5)> Extractly.task("cmd", ~W[echo 42])
+      iex(8)> Extractly.task("cmd", ~W[echo 42])
       "42\n"
 
-      iex(0)> Extractly.task("xxx") |> String.split("\n")|> hd()
-      "***Error, the following output was produced wih error code 1"
+      iex(9)> try do
+      ...(9)>   Extractly.task("xxx")
+      ...(9)> rescue
+      ...(9)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
+      ...(9)> end
+      "The following output was produced wih error code 1"
+
   """
   def task(task, args \\ [])
   def task(task, args) do
     case System.cmd("mix", [task | args]) do
       {output, 0} -> output
-      {output, error} -> "***Error, the following output was produced wih error code #{error}\n#{output}"
+      {output, error} -> raise "The following output was produced wih error code #{error}\n#{output}"
     end
   end
 

@@ -4,8 +4,6 @@ defmodule Extractly.ModuledocTest do
   import Test.Support.Helper, only: [moduledoc: 1, moduledoc: 2]
   import Support.Random, only: [random_string: 0]
 
-  alias Extractly.Messages
-
   describe "base cases" do
     test "w/o headline" do
       mdoc =  moduledoc "Support.Module1"
@@ -29,7 +27,15 @@ defmodule Extractly.ModuledocTest do
     end
 
     test "no moduledoc" do
-      assert false
+      mdoc = Extractly.moduledoc "Support.Module2"
+
+      assert mdoc ==  {:error, "module Support.Module2 does not have a moduledoc"}
+    end
+
+    test "moduledoc is false" do
+      mdoc = Extractly.moduledoc "Support.Module3"
+
+      assert mdoc ==  {:error, "module Support.Module3 does not have a moduledoc"}
     end
   end
 
