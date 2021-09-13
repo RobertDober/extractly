@@ -35,19 +35,19 @@ defmodule Extractly do
     Returns docstring of a function
     Ex:
 
-        iex(0)> {:ok, lines} = Extractly.functiondoc("Extractly.moduledoc/2") |> hd()
-        ...(0)> lines |> String.split("\n") |> Enum.take(3)
+        iex(1)> {:ok, lines} = Extractly.functiondoc("Extractly.moduledoc/2") |> hd()
+        ...(1)> lines |> String.split("\n") |> Enum.take(3)
         ["  Returns docstring of a module", "  Ex:", ""]
 
     We can also pass a list of functions to get their docs concatenated
 
-        iex(1)> [{:ok, moduledoc}, {:error, message}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
-        ...(1)> moduledoc |> String.split("\n") |> Enum.take(4)
+        iex(2)> [{:ok, moduledoc}, {:error, message}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
+        ...(2)> moduledoc |> String.split("\n") |> Enum.take(4)
         [ "  Returns docstring of a module",
           "  Ex:",
           "",
           "      Extractly.moduledoc(\"Extractly\")"]
-        iex(2)> message
+        ...(2)> message
         "Function doc for function Extactly.functiondoc/2 not found"
 
     If all the functions are in the same module the following form can be used
@@ -64,15 +64,15 @@ defmodule Extractly do
         [ "## Extractly.moduledoc/2",
           "",
           "  Returns docstring of a module"]
-        iex(5)> functiondoc |> String.split("\n") |> Enum.take(3)
+        ...(4)> functiondoc |> String.split("\n") |> Enum.take(3)
         [ "## Extractly.functiondoc/2",
           "",
           "  Returns docstring of a function"]
 
     Often times we are interested by **all** public functiondocs...
 
-        iex(6)> [{:ok, out}|_] = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
-        ...(6)> String.split(out, "\n") |> Enum.take(3)
+        iex(5)> [{:ok, out}|_] = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
+        ...(5)> String.split(out, "\n") |> Enum.take(3)
         [ "## Extractly.do_not_edit_warning/1",
           "",
           "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
@@ -81,8 +81,8 @@ defmodule Extractly do
 
     Here is an example
 
-        iex(7)> [ok: doc] = Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
-        ...(7)> doc |> String.split("\n") |> Enum.take(10)
+        iex(6)> [ok: doc] = Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
+        ...(6)> doc |> String.split("\n") |> Enum.take(10)
         [ "  Returns docstring of a function",
           "  Ex:",
           "",
@@ -159,14 +159,14 @@ defmodule Extractly do
   Returns the output of a mix task
     Ex:
 
-      iex(8)> Extractly.task("cmd", ~W[echo 42])
+      iex(7)> Extractly.task("cmd", ~W[echo 42])
       "42\n"
 
-      iex(9)> try do
-      ...(9)>   Extractly.task("xxx")
-      ...(9)> rescue
-      ...(9)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
-      ...(9)> end
+      iex(8)> try do
+      ...(8)>   Extractly.task("xxx")
+      ...(8)> rescue
+      ...(8)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
+      ...(8)> end
       "The following output was produced wih error code 1"
 
   """
