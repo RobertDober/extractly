@@ -143,14 +143,50 @@ defmodule Extractly do
         ...(7)> doc
         "  Provide easy access to information inside the templates rendered by `mix xtra`\n"
 
+    We can use the same options as with `functiondoc`
+
+        iex(8)> {:ok, doc} = Extractly.moduledoc("Extractly", headline: 2)
+        ...(8)> doc |> String.split("\n") |> Enum.take(3)
+        [
+          "## Extractly", "", "  Provide easy access to information inside the templates rendered by `mix xtra`"
+        ]
+
+    If we also want to use `functiondoc :all, module: "Extractly"` **after** the call of `moduledoc` we can
+    include `:all` in the call of `moduledoc`, which will include function and macro docstrings as well
+
+        iex(9)> [{:ok, moduledoc} | _] =
+        ...(9)>   moduledoc("Extractly", headline: 3, include: :all)
+        ...(9)> moduledoc
+        "### Extractly\n\n  Provide easy access to information inside the templates rendered by `mix xtra`\n"
+
+        iex(10)> [_, {:ok, first_functiondoc} | _] =
+        ...(10)>   moduledoc("Extractly", headline: 3, include: :all)
+        ...(10)> first_functiondoc |> String.split("\n") |> Enum.take(5)
+        "### Extractly\n\n  Provide easy access to information inside the templates rendered by `mix xtra`\n"
+        [
+          "### Extractly.do_not_edit_warning/1",
+          "",
+          "  Emits a comment including a message not to edit the created file, as it will be recreated from this template.",
+          "",
+          "  It is a convenience to include this into your templates as follows"
+        ]
+
   """
   def moduledoc(name, opts \\ []) do
     module = String.replace(name, ~r{\A(?:Elixir\.)?}, "Elixir.") |> String.to_atom
     headline = fdoc_headline(name, opts)
 
-    case Code.ensure_loaded(module) do
-      {:module, _} -> _get_moduledoc(module) |> _postprocess(opts) |> _check_nil_moduledoc(name, headline)
-      _ -> {:error, "module not found #{module}"}
+    moduledoc_ =
+      case Code.ensure_loaded(module) do
+        {:module, _} -> _get_moduledoc(module) |> _postprocess(opts) |> _check_nil_moduledoc(name, headline)
+        _ -> {:error, "module not found #{module}"}
+      end
+
+    case Keyword.get(opts, :include) do
+      :all -> more_docs = functiondoc(:all, Keyword.put(opts, :module, name))
+              [moduledoc_ | more_docs]
+      nil -> moduledoc_
+      x -> [moduledoc_, {:error, "Illegal value #{x} for include: keyword in moduledoc for module #{name}, legal values are nil and :all"}]
     end
   end
 
@@ -162,14 +198,14 @@ defmodule Extractly do
   Returns the output of a mix task
     Ex:
 
-      iex(8)> Extractly.task("cmd", ~W[echo 42])
+      iex(11)> Extractly.task("cmd", ~W[echo 42])
       "42\n"
 
-      iex(9)> try do
-      ...(9)>   Extractly.task("xxx")
-      ...(9)> rescue
-      ...(9)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
-      ...(9)> end
+      iex(12)> try do
+      ...(12)>   Extractly.task("xxx")
+      ...(12)> rescue
+      ...(12)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
+      ...(12)> end
       "The following output was produced wih error code 1"
 
   """

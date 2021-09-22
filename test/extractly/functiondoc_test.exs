@@ -68,7 +68,8 @@ defmodule Extractly.FunctiondocTest do
       fdoc = Extractly.functiondoc( :all, module: "Support.Module1", headline: 4 )
       expected = [
         {:ok, "#### Support.Module1.hello/0\n\nFunctiondoc of Module1.hello\n"},
-        {:ok, "#### Support.Module1.other/0\n\nOther functiondoc\n"},]
+        {:ok, "#### Support.Module1.other/0\n\nOther functiondoc\n"},
+        {:ok, "#### Support.Module1.a_macro/0\n\nMacro of Module1\n"}]
 
       assert fdoc == expected
     end

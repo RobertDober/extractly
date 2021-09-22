@@ -14,4 +14,10 @@ defmodule Test.Extractly.XtraTest do
 
     end
   end
+
+  describe "delegation to version" do
+    test "version" do
+      assert Xtra.version
+    end
+  end
 end
