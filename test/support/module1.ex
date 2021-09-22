@@ -22,4 +22,12 @@ defmodule Support.Module1 do
   def missing(a), do: add(2*a, 1)
 
   defp add(a, b), do: a+b
+  @doc """
+  Macro of Module1
+  """
+  defmacro a_macro do
+    quote do
+      IO.puts("hello")
+    end
+  end
 end

@@ -39,5 +39,28 @@ defmodule Extractly.ModuledocTest do
     end
   end
 
+  describe "headline and include" do
+    test "include functiondocs" do
+      mdoc = Extractly.moduledoc "Support.Module1", include: :all
+
+      assert mdoc ==
+        [
+          ok: "Moduledoc of Module1\n",
+          ok: "Functiondoc of Module1.hello\n",
+          ok: "Other functiondoc\n",
+          ok: "Macro of Module1\n"
+        ]
+    end
+    test "must not use a different keyword" do
+      mdoc = Extractly.moduledoc "Support.Module1", include: :some
+
+      assert mdoc ==
+        [
+          ok: "Moduledoc of Module1\n",
+          error: "Illegal value some for include: keyword in moduledoc for module Support.Module1, legal values are nil and :all",
+        ]
+    end
+  end
+
 end
 #  SPDX-License-Identifier: Apache-2.0
