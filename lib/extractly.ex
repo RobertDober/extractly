@@ -37,14 +37,14 @@ defmodule Extractly do
 
         iex(1)> {:ok, lines} = Extractly.functiondoc("Extractly.moduledoc/2") |> hd()
         ...(1)> lines |> String.split("\n") |> Enum.take(3)
-        ["  Returns docstring of a module", "  Ex:", ""]
+        ["  Returns docstring of a module", "", "  E.g. verbatim"]
 
     We can also pass a list of functions to get their docs concatenated
 
         iex(2)> [{:ok, moduledoc}, {:error, message}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
         ...(2)> moduledoc |> String.split("\n") |> Enum.take(4)
         [ "  Returns docstring of a module",
-          "  Ex:",
+          "  E.g. verbatim",
           "",
           "      Extractly.moduledoc(\"Extractly\")"]
         ...(2)> message
@@ -87,9 +87,9 @@ defmodule Extractly do
           "  Ex:",
           "",
           "```elixir",
-          "      iex(0)> {:ok, lines} = Extractly.functiondoc(\"Extractly.moduledoc/2\") |> hd()",
-          "      ...(0)> lines |> String.split(\"\\n\") |> Enum.take(3)",
-          "      [\"  Returns docstring of a module\", \"  Ex:\", \"\"]",
+          "      iex(1)> {:ok, lines} = Extractly.functiondoc(\"Extractly.moduledoc/2\") |> hd()",
+          "      ...(1)> lines |> String.split(\"\\n\") |> Enum.take(3)",
+          "      [\"  Returns docstring of a module\", \"\", \"  E.g. verbatim\"]",
           "```",
           "",
           "  We can also pass a list of functions to get their docs concatenated"]
@@ -124,7 +124,6 @@ defmodule Extractly do
   @doc """
     Returns docstring of a macro
 
-    Same naming convention for macros as for functions.
   """
   def macrodoc(name, opts\\[]) do
     {module, macro_name, arity} = _parse_entity_name(name)
@@ -135,11 +134,15 @@ defmodule Extractly do
     end
   end
 
-  @doc """
+  @doc ~S"""
     Returns docstring of a module
-    Ex:
 
-        Extractly.moduledoc("Extractly")
+    E.g. verbatim
+
+        iex(7)> {:ok, doc} = Extractly.moduledoc("Extractly")
+        ...(7)> doc
+        "  Provide easy access to information inside the templates rendered by `mix xtra`\n"
+
   """
   def moduledoc(name, opts \\ []) do
     module = String.replace(name, ~r{\A(?:Elixir\.)?}, "Elixir.") |> String.to_atom
@@ -159,14 +162,14 @@ defmodule Extractly do
   Returns the output of a mix task
     Ex:
 
-      iex(7)> Extractly.task("cmd", ~W[echo 42])
+      iex(8)> Extractly.task("cmd", ~W[echo 42])
       "42\n"
 
-      iex(8)> try do
-      ...(8)>   Extractly.task("xxx")
-      ...(8)> rescue
-      ...(8)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
-      ...(8)> end
+      iex(9)> try do
+      ...(9)>   Extractly.task("xxx")
+      ...(9)> rescue
+      ...(9)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
+      ...(9)> end
       "The following output was produced wih error code 1"
 
   """
