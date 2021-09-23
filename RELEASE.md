@@ -1,3 +1,11 @@
+# v0.5.1 2021-09-22
+
+- [Include all docstrings of a module](https://github.com/robertdober/extractly/issues/16)
+
+# v0.5.0 2021-09-13
+
+- [Add Messaging to stderr](https://github.com/robertdober/extractly/issues/14)
+
 # v0.4.1 2021-08-30
 
 - [#012 Add directives](https://github.com/RobertDober/extractly/issues/12)
