@@ -162,7 +162,6 @@ defmodule Extractly do
         iex(10)> [_, {:ok, first_functiondoc} | _] =
         ...(10)>   moduledoc("Extractly", headline: 3, include: :all)
         ...(10)> first_functiondoc |> String.split("\n") |> Enum.take(5)
-        "### Extractly\n\n  Provide easy access to information inside the templates rendered by `mix xtra`\n"
         [
           "### Extractly.do_not_edit_warning/1",
           "",
