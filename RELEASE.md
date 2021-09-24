@@ -1,3 +1,5 @@
+# v0.5.2 2021-09-22
+
 # v0.5.1 2021-09-22
 
 - [Include all docstrings of a module](https://github.com/robertdober/extractly/issues/16)

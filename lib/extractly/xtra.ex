@@ -65,6 +65,7 @@ defmodule Extractly.Xtra do
     case Extractly.moduledoc(name, opts) do
       {:ok, result} -> result
       {:error, message} -> _add_error(message)
+      list -> _split_outputs(list, [])
     end
   end
 

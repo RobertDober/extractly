@@ -14,6 +14,197 @@ and any changes you make in this file will most likely be lost
 [![Hex.pm](https://img.shields.io/hexpm/dt/extractly.svg)](https://hex.pm/packages/extractly)
 
 
+## Extractly
+
+  Provide easy access to information inside the templates rendered by `mix xtra`
+
+## Extractly.do_not_edit_warning/1
+
+  Emits a comment including a message not to edit the created file, as it will be recreated from this template.
+
+  It is a convenience to include this into your templates as follows
+
+          <%= xtra.do_not_edit_warning %>
+
+  or I18n'ed
+
+          <%= xtra.do_not_edit_warning, lang: :fr %>
+
+  If you are not generating html or markdown the comment can be parametrized
+
+          <%= xtra.do_not_edit_warning, comment_start: "-- ", comment_end: "" %>
+
+  If you want to include the name of the source template use `template: template` option, so
+  a call may be as complex as:
+
+          <%= xtra.do_not_edit_warning, comment_start: "-- ", comment_end: "", template: template, lang: :it %>
+
+
+## Extractly.functiondoc/2
+
+  Returns docstring of a function
+  Ex:
+
+```elixir
+      iex(1)> {:ok, lines} = Extractly.functiondoc("Extractly.moduledoc/2") |> hd()
+      ...(1)> lines |> String.split("\n") |> Enum.take(3)
+      ["  Returns docstring of a module", "", "  E.g. verbatim"]
+```
+
+  We can also pass a list of functions to get their docs concatenated
+
+```elixir
+      iex(2)> [{:ok, moduledoc}, {:error, message}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
+      ...(2)> moduledoc |> String.split("\n") |> Enum.take(4)
+      [ "  Returns docstring of a module",
+        "  E.g. verbatim",
+        "",
+        "      Extractly.moduledoc(\"Extractly\")"]
+      ...(2)> message
+      "Function doc for function Extactly.functiondoc/2 not found"
+```
+
+  If all the functions are in the same module the following form can be used
+
+```elixir
+      iex(3)> [{:ok, out}, _] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
+      ...(3)> String.split(out, "\n") |> hd()
+      "  Returns docstring of a module"
+```
+
+  However it is convenient to add a markdown headline before each functiondoc, especially in these cases,
+  it can be done by indicating the `headline: level` option
+
+```elixir
+      iex(4)> [{:ok, moduledoc}, {:ok, functiondoc}] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
+      ...(4)> moduledoc |> String.split("\n") |> Enum.take(3)
+      [ "## Extractly.moduledoc/2",
+        "",
+        "  Returns docstring of a module"]
+      ...(4)> functiondoc |> String.split("\n") |> Enum.take(3)
+      [ "## Extractly.functiondoc/2",
+        "",
+        "  Returns docstring of a function"]
+```
+
+  Often times we are interested by **all** public functiondocs...
+
+```elixir
+      iex(5)> [{:ok, out}|_] = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
+      ...(5)> String.split(out, "\n") |> Enum.take(3)
+      [ "## Extractly.do_not_edit_warning/1",
+        "",
+        "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
+```
+
+  We can specify a language to wrap indented code blocks into ` ```elixir\n...\n``` `
+
+  Here is an example
+
+```elixir
+      iex(6)> [ok: doc] = Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
+      ...(6)> doc |> String.split("\n") |> Enum.take(10)
+      [ "  Returns docstring of a function",
+        "  Ex:",
+        "",
+        "```elixir",
+        "      iex(1)> {:ok, lines} = Extractly.functiondoc(\"Extractly.moduledoc/2\") |> hd()",
+        "      ...(1)> lines |> String.split(\"\\n\") |> Enum.take(3)",
+        "      [\"  Returns docstring of a module\", \"\", \"  E.g. verbatim\"]",
+        "```",
+        "",
+        "  We can also pass a list of functions to get their docs concatenated"]
+```
+
+
+## Extractly.macrodoc/2
+
+  Returns docstring of a macro
+
+
+## Extractly.moduledoc/2
+
+  Returns docstring of a module
+
+  E.g. verbatim
+
+```elixir
+      iex(7)> {:ok, doc} = Extractly.moduledoc("Extractly")
+      ...(7)> doc
+      "  Provide easy access to information inside the templates rendered by `mix xtra`\n"
+```
+
+  We can use the same options as with `functiondoc`
+
+```elixir
+      iex(8)> {:ok, doc} = Extractly.moduledoc("Extractly", headline: 2)
+      ...(8)> doc |> String.split("\n") |> Enum.take(3)
+      [
+        "## Extractly", "", "  Provide easy access to information inside the templates rendered by `mix xtra`"
+      ]
+```
+
+  If we also want to use `functiondoc :all, module: "Extractly"` **after** the call of `moduledoc` we can
+  include `:all` in the call of `moduledoc`, which will include function and macro docstrings as well
+
+```elixir
+      iex(9)> [{:ok, moduledoc} | _] =
+      ...(9)>   moduledoc("Extractly", headline: 3, include: :all)
+      ...(9)> moduledoc
+      "### Extractly\n\n  Provide easy access to information inside the templates rendered by `mix xtra`\n"
+```
+
+```elixir
+      iex(10)> [_, {:ok, first_functiondoc} | _] =
+      ...(10)>   moduledoc("Extractly", headline: 3, include: :all)
+      ...(10)> first_functiondoc |> String.split("\n") |> Enum.take(5)
+      [
+        "### Extractly.do_not_edit_warning/1",
+        "",
+        "  Emits a comment including a message not to edit the created file, as it will be recreated from this template.",
+        "",
+        "  It is a convenience to include this into your templates as follows"
+      ]
+```
+
+
+## Extractly.task/2
+
+Returns the output of a mix task
+  Ex:
+
+```elixir
+    iex(11)> Extractly.task("cmd", ~W[echo 42])
+    "42\n"
+```
+
+```elixir
+    iex(12)> try do
+    ...(12)>   Extractly.task("xxx")
+    ...(12)> rescue
+    ...(12)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
+    ...(12)> end
+    "The following output was produced wih error code 1"
+```
+
+
+## Extractly.toc/2
+
+Extract Table Of Contents from a markdown document
+
+The files used for the following doctest can be found [here](https://github.com/RobertDober/extractly/tree/master/test/fixtures)
+
+```elixir
+    iex(0)> raise "need to document this"
+```
+
+## Extractly.version/0
+
+A convenience method to access this libraries version
+
+
+## Mix.Tasks.Xtra
+
 
 ##  Mix task to Transform EEx templates in the context of the `Extractly` module.
 
@@ -46,6 +237,8 @@ and any changes you make in this file will most likely be lost
       More text
 
 
+## Mix.Tasks.Xtra.Help
+
 ### Usage:
 
     mix xtra [options]... [template]
@@ -68,131 +261,6 @@ and any changes you make in this file will most likely be lost
 
 
 
-### API
-
-### Extractly.moduledoc/2
-
-  Returns docstring of a module
-  Ex:
-
-      Extractly.moduledoc("Extractly")
-
-### Extractly.functiondoc/2
-
-  Returns docstring of a function
-  Ex:
-
-```elixir
-      iex(0)> {:ok, lines} = Extractly.functiondoc("Extractly.moduledoc/2") |> hd()
-      ...(0)> lines |> String.split("\n") |> Enum.take(3)
-      ["  Returns docstring of a module", "  Ex:", ""]
-```
-
-  We can also pass a list of functions to get their docs concatenated
-
-```elixir
-      iex(1)> [{:ok, moduledoc}, {:error, message}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
-      ...(1)> moduledoc |> String.split("\n") |> Enum.take(4)
-      [ "  Returns docstring of a module",
-        "  Ex:",
-        "",
-        "      Extractly.moduledoc(\"Extractly\")"]
-      iex(2)> message
-      "Function doc for function Extactly.functiondoc/2 not found"
-```
-
-  If all the functions are in the same module the following form can be used
-
-```elixir
-      iex(3)> [{:ok, out}, _] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
-      ...(3)> String.split(out, "\n") |> hd()
-      "  Returns docstring of a module"
-```
-
-  However it is convenient to add a markdown headline before each functiondoc, especially in these cases,
-  it can be done by indicating the `headline: level` option
-
-```elixir
-      iex(4)> [{:ok, moduledoc}, {:ok, functiondoc}] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
-      ...(4)> moduledoc |> String.split("\n") |> Enum.take(3)
-      [ "## Extractly.moduledoc/2",
-        "",
-        "  Returns docstring of a module"]
-      iex(5)> functiondoc |> String.split("\n") |> Enum.take(3)
-      [ "## Extractly.functiondoc/2",
-        "",
-        "  Returns docstring of a function"]
-```
-
-  Often times we are interested by **all** public functiondocs...
-
-```elixir
-      iex(6)> [{:ok, out}|_] = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
-      ...(6)> String.split(out, "\n") |> Enum.take(3)
-      [ "## Extractly.do_not_edit_warning/1",
-        "",
-        "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
-```
-
-  We can specify a language to wrap indented code blocks into ` ```elixir\n...\n``` `
-
-  Here is an example
-
-```elixir
-      iex(7)> [ok: doc] = Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
-      ...(7)> doc |> String.split("\n") |> Enum.take(10)
-      [ "  Returns docstring of a function",
-        "  Ex:",
-        "",
-        "```elixir",
-        "      iex(0)> {:ok, lines} = Extractly.functiondoc(\"Extractly.moduledoc/2\") |> hd()",
-        "      ...(0)> lines |> String.split(\"\\n\") |> Enum.take(3)",
-        "      [\"  Returns docstring of a module\", \"  Ex:\", \"\"]",
-        "```",
-        "",
-        "  We can also pass a list of functions to get their docs concatenated"]
-```
-
-
-### Extractly.macrodoc/2
-
-  Returns docstring of a macro
-
-  Same naming convention for macros as for functions.
-
-### Extractly.task/2
-
-Returns the output of a mix task
-  Ex:
-
-```elixir
-    iex(8)> Extractly.task("cmd", ~W[echo 42])
-    "42\n"
-```
-
-```elixir
-    iex(9)> try do
-    ...(9)>   Extractly.task("xxx")
-    ...(9)> rescue
-    ...(9)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
-    ...(9)> end
-    "The following output was produced wih error code 1"
-```
-
-
-
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `extractly` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:extractly, "~> 0.5.0"}
-  ]
-end
-```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
