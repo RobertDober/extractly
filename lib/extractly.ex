@@ -208,17 +208,15 @@ defmodule Extractly do
   end
 
   @doc ~S"""
+
   Extract Table Of Contents from a markdown document
 
   The files used for the following doctest can be found [here](https://github.com/RobertDober/extractly/tree/master/test/fixtures)
 
-      iex(0)> raise "need to document this"
+    iex(0)> raise "need to document this"
   """
-  def toc(filename_stream_or_lines, options \\ []),
-    do:
-      filename_stream_or_lines
-      |> Extractly.Tools.lines_from_source()
-      |> Extractly.Toc.render(options)
+  def toc(markdown_doc, options \\ []),
+    do: markdown_doc |> Extractly.Tools.lines_from_source() |> Extractly.Toc.render(options)
 
   defp _check_nil_moduledoc(moduledoc_or_nil, name, headline)
 
