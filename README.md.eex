@@ -1,4 +1,4 @@
-# Extractly
+  # Extractly
 
 <%= xtra.do_not_edit_warning template: template %>
 
@@ -11,6 +11,8 @@
 
 
 <%= xtra.moduledoc "Extractly", headline: 2, include: :all, wrap_code_blocks: "elixir" %>
+
+<%= xtra.moduledoc "Extractly.Toc", headline: 2, include: :all, wrap_code_blocks: "elixir" %>
 
 <%= xtra.moduledoc "Mix.Tasks.Xtra", headline: 2, include: :all, wrap_code_blocks: "elixir" %>
 

@@ -1,5 +1,6 @@
 defmodule Extractly.Toc.Renderer.AstRenderer do
 
+  # TODO: Rename to render_push_list
   @doc ~S"""
   Transform a normalized tuple list (that is a list of tuples of the form {n, text})
   in which there exists an entry of the form {m, text} for all m betwenn min(n) and
@@ -17,7 +18,6 @@ defmodule Extractly.Toc.Renderer.AstRenderer do
       ["I", :open, :open, "I - (i)", :close, :close, "II", :open, "II 1", :close]
 
   This format is ideal to be transformed into, e.g. an HTML representation
-
 
   """
   def make_push_list(normalized_tuples, options \\ [])

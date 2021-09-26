@@ -8,26 +8,14 @@
   @moduledoc false
 
   @doc false
-  defp normalize_levels(levels) do
-    level_translation_map =
-      levels
-      |> Enum.reduce(%{0 => true}, fn {l, _}, acc -> Map.put(acc, l, true) end)
-      |> Map.keys()
-      |> Enum.sort()
-      |> Enum.with_index()
-      |> Enum.into(%{})
 
-    levels
-    |> Enum.map(fn {l, text} -> {Map.get(level_translation_map, l), text} end)
-  end
+  def render_ast(tuples, options), do: tuples |> _normalize_levels(options) |> AstRenderer.render_ast(options)
 
-  def render_ast(tuples, options), do: tuples |> normalize_levels() |> AstRenderer.render_ast(options)
+  def render_html(tuples, options), do: tuples |> _normalize_levels(options) |> HtmlRenderer.render_html(options)
 
-  def render_html(tuples, options), do: tuples |> normalize_levels() |> HtmlRenderer.render_html(options)
+  def render_md(tuples, options), do: tuples |> _normalize_levels(options) |> _render_md(options)
 
-  def render_md(tuples, options), do: tuples |> normalize_levels() |> _render_md(options)
-
-  def render_push_list(tuples, options), do: tuples |> normalize_levels() |> AstRenderer.make_push_list(options)
+  def render_push_list(tuples, options), do: tuples |> _normalize_levels(options) |> AstRenderer.make_push_list(options)
 
   @unlinkables ~r{\W+}
   defp _make_gh_link(text) do
@@ -38,21 +26,39 @@
     "[#{text}](##{link})"
   end
 
-  defp normalize_levels(levels) do
+  defp _maybe_remove_gaps(tuples, options)
+  defp _maybe_remove_gaps(tuples, %{remove_gaps: true}), do: _remove_gaps(tuples)
+  defp _maybe_remove_gaps(tuples, _), do: tuples
+
+  defp _maybe_remove_levels(tuples, options)
+  defp _maybe_remove_levels(tuples, %{min_level: 1, max_level: 7}), do: tuples
+  defp _maybe_remove_levels(tuples, %{min_level: min, max_level: max}),
+    do: _remove_levels(tuples, min..max)
+
+  defp _normalize_levels(levels, options) do
+    levels_ = _maybe_remove_levels(levels, options)
+
     level_translation_map =
-      levels
+      levels_
       |> Enum.reduce(%{0 => true}, fn {l, _}, acc -> Map.put(acc, l, true) end)
       |> Map.keys()
       |> Enum.sort()
       |> Enum.with_index()
       |> Enum.into(%{})
 
-    levels
-    |> Enum.map(fn {l, text} -> {Map.get(level_translation_map, l), text} end)
+    levels_
+      |> Enum.map(fn {l, text} -> {Map.get(level_translation_map, l), text} end)
+      |> _maybe_remove_gaps(options)
   end
 
-  defp _render_html(tuples, options, result)
-  defp _render_html([], _options, result), do: Enum.reverse(result)
+  defp _remove_gaps(tuples, clevel \\ 1, result \\ [])
+  defp _remove_gaps([], _clevel, result), do: Enum.reverse(result)
+  defp _remove_gaps([{tlevel, text}|rest], clevel, result) when tlevel <= clevel + 1,
+    do: _remove_gaps(rest, tlevel, [{tlevel, text}|result])
+  defp _remove_gaps([{_tlevel, text}|rest], clevel, result),
+    do: _remove_gaps(rest, clevel+1, [{clevel+1, text}|result])
+
+  defp _remove_levels(tuples, range), do: Enum.filter(tuples, &Enum.member?(range, &1))
 
   defp _render_md(tuples, options) do
     tuples
