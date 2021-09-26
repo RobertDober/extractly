@@ -1,4 +1,4 @@
-defmodule Extractly do
+  defmodule Extractly do
   alias Extractly.DoNotEdit
 
   import Extractly.Helpers
@@ -213,7 +213,22 @@ defmodule Extractly do
 
   The files used for the following doctest can be found [here](https://github.com/RobertDober/extractly/tree/master/test/fixtures)
 
-    iex(0)> raise "need to document this"
+      iex(11)> lines = [
+      ...(11)>         "## Usage",
+      ...(11)>         "### API",
+      ...(11)>         "#### EarmarkParser.as_ast/2",
+      ...(11)>         "### Support",
+      ...(11)> ]
+      ...(11)> toc(lines, gh_links: true)
+      [
+        "- [Usage](#usage)",
+        "  - [API](#api)",
+        "    - [EarmarkParser.as_ast/2](#earmarkparseras_ast2)",
+        "  - [Support](#support)",
+      ]
+
+  Detailed description can be found in `Extractly.Toc`'s docstrings
+
   """
   def toc(markdown_doc, options \\ []),
     do: markdown_doc |> Extractly.Tools.lines_from_source() |> Extractly.Toc.render(options)
@@ -229,14 +244,14 @@ defmodule Extractly do
   Returns the output of a mix task
     Ex:
 
-      iex(11)> Extractly.task("cmd", ~W[echo 42])
+      iex(12)> Extractly.task("cmd", ~W[echo 42])
       "42\n"
 
-      iex(12)> try do
-      ...(12)>   Extractly.task("xxx")
-      ...(12)> rescue
-      ...(12)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
-      ...(12)> end
+      iex(13)> try do
+      ...(13)>   Extractly.task("xxx")
+      ...(13)> rescue
+      ...(13)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
+      ...(13)> end
       "The following output was produced wih error code 1"
 
   """

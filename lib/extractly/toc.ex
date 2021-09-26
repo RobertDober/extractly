@@ -1,8 +1,8 @@
-defmodule Extractly.Toc do
+  defmodule Extractly.Toc do
 
   alias Extractly.Toc.Options
 
-  import Extractly.Toc.Renderer, only: [render_html: 2, render_md: 2]
+  import Extractly.Toc.Renderer
 
   @moduledoc ~S"""
   Extract Table Of Contents from a list of lines representing a Markdown document
@@ -33,12 +33,12 @@ defmodule Extractly.Toc do
   `render` can render Github like links to within the page, here is a real world example
   from a Github README.md file
 
-      iex(4)> lines = """
-      ...(4)>         ## Usage
-      ...(4)>         ### API
-      ...(4)>         #### EarmarkParser.as_ast/2
-      ...(4)>         ### Support
-      ...(4)>      """ |> String.split("\n")
+      iex(4)> lines = [
+      ...(4)>         "## Usage",
+      ...(4)>         "### API",
+      ...(4)>         "#### EarmarkParser.as_ast/2",
+      ...(4)>         "### Support",
+      ...(4)> ]
       ...(4)> render(lines, gh_links: true)
       [
         "- [Usage](#usage)",
@@ -50,16 +50,20 @@ defmodule Extractly.Toc do
     Sometimes it might be appropriate to generate HTML directly
 
       iex(5)> render(["## One", "### Two"], format: :html)
-      [
-        "<ul>",
-        "<li>One</li>",
-        "<li>",
-        "<ul>",
-        "<li>Two</li">,
-        "</ul>",
-        "</li">,
-        "</ul">
-      ]
+      ["<ul>", "<li>One<ul>", "<li>Two</li>", "</ul></li>", "</ul>"]
+
+    Intermediate formats are available too
+
+    Either a linear `PushList`
+
+      iex(6)> render(["# I", "## I.1", "## I.2", "### I.2.(i)", "# II", "### II.1.(ii)"], format: :push_list)
+      ["I", :open, "I.1", "I.2", :open, "I.2.(i)", :close, :close, "II", :open, :open, "II.1.(ii)", :close, :close]
+
+    Or an AST tree
+
+      iex(7)> render(["# I", "## I.1", "## I.2", "### I.2.(i)", "# II", "### II.1.(ii)"], format: :ast)
+      ["I", ["I.1", "I.2", ["I.2.(i)"]], "II", [["II.1.(ii)"]]]
+
   """
 
   def render(lines, options \\ []), do: lines |> _scan() |> _render(Options.new(options))
@@ -71,12 +75,14 @@ defmodule Extractly.Toc do
     |> Enum.filter(& &1)
     |> Enum.map(fn [_, header, text] -> {String.length(header), text} end)
 
-  defp _render(tuples, options), do:  _render_format(tuples, Keyword.get(options, :format, :markdown), options)
+  defp _render(tuples, options), do: _render_format(tuples, options.format || :markdown, options)
 
   defp _render_format(tuples, format, options)
   defp _render_format(tuples, :markdown, options), do: render_md(tuples, options)
   defp _render_format(tuples, :md, options), do: render_md(tuples, options)
   defp _render_format(tuples, :html, options), do: render_html(tuples, options)
+  defp _render_format(tuples, :push_list, options), do: render_push_list(tuples, options)
+  defp _render_format(tuples, :ast, options), do: render_ast(tuples, options)
   defp _render_format(_, format, _), do: {:error, "Unsupported format: #{format} in render"}
 
 end
