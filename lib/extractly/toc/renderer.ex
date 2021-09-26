@@ -58,7 +58,7 @@
   defp _remove_gaps([{_tlevel, text}|rest], clevel, result),
     do: _remove_gaps(rest, clevel+1, [{clevel+1, text}|result])
 
-  defp _remove_levels(tuples, range), do: Enum.filter(tuples, &Enum.member?(range, &1))
+  defp _remove_levels(tuples, range), do: Enum.filter(tuples, fn {l, _} -> Enum.member?(range, l) end)
 
   defp _render_md(tuples, options) do
     tuples

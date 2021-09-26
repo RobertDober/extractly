@@ -3,7 +3,6 @@ defmodule Test.Extractly.Toc.Render.RenderHtmlTest do
 
   # doctest Extractly.Toc.Renderer.HtmlRenderer, import: true
   alias Extractly.Toc
-  import Toc.Renderer.HtmlRenderer, only: [render_html: 1]
 
   @simple [ {1, "a"}, {3, "a0a"}, {3, "a0b"}, {2, "ab"} ]
   @medium [ {1, "x"}, {3, "x0x"}, {3, "x0y"}, {1, "y"}, {1, "z"}, {4, "z00x"} ]
@@ -48,6 +47,9 @@ defmodule Test.Extractly.Toc.Render.RenderHtmlTest do
 
       assert result == expected
     end
+
+    defp render_html(html, options \\ []),
+    do: Toc.Renderer.HtmlRenderer.render_html(html, Toc.Options.new(options))
   end
 
   describe "options and escaping" do
