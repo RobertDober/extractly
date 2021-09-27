@@ -1,6 +1,5 @@
 defmodule Extractly.Toc.Renderer.AstRenderer do
 
-  # TODO: Rename to render_push_list
   @doc ~S"""
   Transform a normalized tuple list (that is a list of tuples of the form {n, text})
   in which there exists an entry of the form {m, text} for all m betwenn min(n) and
@@ -14,14 +13,14 @@ defmodule Extractly.Toc.Renderer.AstRenderer do
   representation of the different levels by representing opening and closing brackets by
   the symbols `:open` and  `:close`
 
-      iex(1)> make_push_list([{1, "I"}, {3, "I - (i)"}, {1, "II"}, {2, "II 1"}])
+      iex(1)> render_push_list([{1, "I"}, {3, "I - (i)"}, {1, "II"}, {2, "II 1"}])
       ["I", :open, :open, "I - (i)", :close, :close, "II", :open, "II 1", :close]
 
   This format is ideal to be transformed into, e.g. an HTML representation
 
   """
-  def make_push_list(normalized_tuples, options \\ [])
-  def make_push_list(normalized_tuples, _options), do: _make_push_list(normalized_tuples, {1, []})
+  def render_push_list(normalized_tuples, options \\ [])
+  def render_push_list(normalized_tuples, _options), do: _render_push_list(normalized_tuples, {1, []})
 
 
   @doc ~S"""
@@ -33,7 +32,7 @@ defmodule Extractly.Toc.Renderer.AstRenderer do
   def render_ast(normalized_tuples, options \\ [])
   def render_ast(normalized_tuples, _options), do:
     normalized_tuples
-    |> _make_push_list({1, []})
+    |> _render_push_list({1, []})
     # |> IO.inspect
     |> _make_tree([])
 
@@ -41,9 +40,9 @@ defmodule Extractly.Toc.Renderer.AstRenderer do
   defp _add_closes_and_reverse(1, push_list), do: Enum.reverse(push_list)
   defp _add_closes_and_reverse(n, push_list), do: _add_closes_and_reverse(n-1, [:close|push_list])
 
-  defp _make_push_list(tuples, result)
-  defp _make_push_list([], {n, push_list}), do: _add_closes_and_reverse(n, push_list)
-  defp _make_push_list([tuple|rest], result), do: _make_push_list(rest, _new_result(tuple, result))
+  defp _render_push_list(tuples, result)
+  defp _render_push_list([], {n, push_list}), do: _add_closes_and_reverse(n, push_list)
+  defp _render_push_list([tuple|rest], result), do: _render_push_list(rest, _new_result(tuple, result))
 
   defp _make_tree(push_list, result)
   defp _make_tree([], result), do: Enum.reverse(result)

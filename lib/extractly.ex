@@ -227,7 +227,23 @@
         "  - [Support](#support)",
       ]
 
-  Detailed description can be found in `Extractly.Toc`'s docstrings
+      But if you do not want links
+
+      iex(12)> lines = [
+      ...(12)>         "## Usage",
+      ...(12)>         "### API",
+      ...(12)>         "#### EarmarkParser.as_ast/2",
+      ...(12)>         "### Support",
+      ...(12)> ]
+      ...(12)> toc(lines)
+      [
+        "- Usage",
+        "  - API",
+        "    - EarmarkParser.as_ast/2",
+        "  - Support",
+      ]
+
+  A more detailed description can be found in `Extractly.Toc`'s docstrings
 
   """
   def toc(markdown_doc, options \\ []),
@@ -244,14 +260,14 @@
   Returns the output of a mix task
     Ex:
 
-      iex(12)> Extractly.task("cmd", ~W[echo 42])
+      iex(13)> Extractly.task("cmd", ~W[echo 42])
       "42\n"
 
-      iex(13)> try do
-      ...(13)>   Extractly.task("xxx")
-      ...(13)> rescue
-      ...(13)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
-      ...(13)> end
+      iex(14)> try do
+      ...(14)>   Extractly.task("xxx")
+      ...(14)> rescue
+      ...(14)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
+      ...(14)> end
       "The following output was produced wih error code 1"
 
   """
@@ -344,13 +360,6 @@
         {:docs_v1, _, :elixir, _, %{"en" => module_doc}, _, _} -> module_doc
         _ -> nil
       end
-
-      # TODO: Check under which circumstances this code is needed if at all.
-      # case Code.get_docs(module, :moduledoc) do
-      #   {_, docs} when is_binary(docs) ->
-      #     docs
-      #     _ -> nil
-      # end
     end
   end
 

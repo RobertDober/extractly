@@ -1,13 +1,13 @@
   defmodule Extractly.Toc.Renderer.HtmlRenderer do
   @moduledoc false
-  import Extractly.Toc.Renderer.AstRenderer, only: [make_push_list: 1]
+  import Extractly.Toc.Renderer.AstRenderer, only: [render_push_list: 1]
 
 
   # TODO: Replace 'ul' and 'li' with values depending on options
   # TODO: Escap text when html is created
   def render_html(tuples, options\\[]) do
     tuples
-    |> make_push_list()
+    |> render_push_list()
     |> _to_html(options, [_open_tag(options, true)])
   end
 

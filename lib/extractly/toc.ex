@@ -111,6 +111,11 @@
       iex(9)> render(["# I", "## I.1", "## I.2", "### I.2.(i)", "# II", "### II.1.(ii)"], format: :ast)
       ["I", ["I.1", "I.2", ["I.2.(i)"]], "II", [["II.1.(ii)"]]]
 
+  #### Unsupported Formats
+
+
+      iex(9)> render(["# Does not really matter"], format: :unknown)
+      {:error, "Unsupported format: unknown in render"}
   """
 
   def render(lines, options \\ []), do: lines |> _scan() |> _render(Options.new(options))
@@ -126,7 +131,6 @@
 
   defp _render_format(tuples, format, options)
   defp _render_format(tuples, :markdown, options), do: render_md(tuples, options)
-  defp _render_format(tuples, :md, options), do: render_md(tuples, options)
   defp _render_format(tuples, :html, options), do: render_html(tuples, options)
   defp _render_format(tuples, :push_list, options), do: render_push_list(tuples, options)
   defp _render_format(tuples, :ast, options), do: render_ast(tuples, options)

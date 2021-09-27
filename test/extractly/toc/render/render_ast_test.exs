@@ -2,7 +2,7 @@ defmodule Test.Extractly.Toc.Render.RenderAstTest do
   use ExUnit.Case
 
   doctest Extractly.Toc.Renderer.AstRenderer, import: true
-  import Extractly.Toc.Renderer.AstRenderer, only: [make_push_list: 1, render_ast: 1]
+  import Extractly.Toc.Renderer.AstRenderer, only: [render_push_list: 1, render_ast: 1]
 
   @simple [ {1, "a"}, {3, "a0a"}, {3, "a0b"}, {2, "ab"} ]
   @medium [ {1, "x"}, {3, "x0x"}, {3, "x0y"}, {1, "y"}, {1, "z"}, {4, "z00x"} ]
@@ -29,7 +29,7 @@ defmodule Test.Extractly.Toc.Render.RenderAstTest do
   describe "push list" do
     test "simple" do
       expected = ["a", :open, :open, "a0a", "a0b", :close, "ab", :close]
-      result = make_push_list(@simple)
+      result = render_push_list(@simple)
 
       assert result == expected
     end
@@ -40,7 +40,7 @@ defmodule Test.Extractly.Toc.Render.RenderAstTest do
         "Mix task to Transform EEx templates in the context of the `Extractly` module.",
         "Mix.Tasks.Xtra.Help", :open, "Usage:", :open, "Options:", "Argument:", :close,
         :close, "Author", :close, "LICENSE"]
-      result = make_push_list(@real)
+      result = render_push_list(@real)
 
       assert result == expected
     end
