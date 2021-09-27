@@ -1,4 +1,4 @@
-# Extractly
+  # Extractly
 
 <%= xtra.do_not_edit_warning template: template %>
 
@@ -9,28 +9,17 @@
 [![Hex.pm](https://img.shields.io/hexpm/dw/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dt/extractly.svg)](https://hex.pm/packages/extractly)
 
+<%= xtra.toc :self %>
 
-<%= xtra.moduledoc "Mix.Tasks.Xtra", wrap_code_blocks: "elixir" %>
+<%= xtra.moduledoc "Extractly", headline: 2, include: :all, wrap_code_blocks: "elixir" %>
 
-<%= xtra.moduledoc "Mix.Tasks.Xtra.Help", wrap_code_blocks: "elixir" %>
+<%= xtra.moduledoc "Extractly.Toc", headline: 2, include: :all, wrap_code_blocks: "elixir" %>
+
+<%= xtra.moduledoc "Mix.Tasks.Xtra", headline: 2, include: :all, wrap_code_blocks: "elixir" %>
+
+<%= xtra.moduledoc "Mix.Tasks.Xtra.Help", headline: 2, include: :all, wrap_code_blocks: "elixir" %>
 
 
-### API
-
-<%= xtra.functiondoc ["moduledoc/2", "functiondoc/2", "macrodoc/2", "task/2"], module: "Extractly", headline: 3, wrap_code_blocks: "elixir" %>
-
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `extractly` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:extractly, "~> <%= xtra.version %>"}
-  ]
-end
-```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
@@ -45,4 +34,4 @@ Copyright © 20[18-21] Robert Dober, robert.dober@gmail.com,
 
 Same as Elixir, which is Apache License v2.0. Please refer to [LICENSE](LICENSE) for details.
 
-SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: Apache-2.0 -->

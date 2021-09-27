@@ -65,9 +65,42 @@ defmodule Extractly.Xtra do
     case Extractly.moduledoc(name, opts) do
       {:ok, result} -> result
       {:error, message} -> _add_error(message)
+      list -> _split_outputs(list, [])
     end
   end
 
+  @doc ~S"""
+  Wraps a call to `Extractly.toc`
+
+  If a filename is provided the TOC is extracted from the filename and inserted into the document
+  However, if `:self` is provided as an argument a placeholder is inserted into the document
+  which allows the `Mix` task `xtra` to replace the placeholder with the TOC created from the
+  very same document
+
+      iex(4)> toc(:self)
+      "<!---- Extractly Self TOC ---->"
+
+      iex(5)> toc("test/fixtures/toc-short.md", min_level: 2)
+      "- Level2 1.first\n- Level2 1.second\n  - Level3 1.second(i)"
+
+  Errors are handled with comments and output to stderr, as usual
+
+      iex(5)> toc("surelythisfiledoesnotexist.eajeza963q1hf")
+      "<!-- could not read from \"surelythisfiledoesnotexist.eajeza963q1hf\" -->"
+
+  """
+  def toc(filename_or_self, opts \\ [])
+  def toc(:self, opts) do
+    M.add_debug("toc called for :self #{inspect opts}")
+    Extractly.Toc.placeholder
+  end
+  def toc(name, opts) do
+    M.add_debug("toc called for #{name} #{inspect opts}")
+    case Extractly.toc(name, opts) do
+      {:ok, result} -> result |> Enum.join("\n")
+      {:error, message} -> _add_error(message)
+    end
+  end
   defp _add_error(message) do
     M.add_error(message)
     "<!-- #{message} -->"

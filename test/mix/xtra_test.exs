@@ -54,6 +54,18 @@ defmodule Mix.XtraTest do
     end
   end
 
+  describe "toc :self" do
+    test "single line" do
+      stderr = capture_io(:stderr, fn ->
+        Mix.Tasks.Xtra.run(["--verbose", Path.expand("test/fixtures/toc_self.eex")])
+      end)
+      expected = """
+      *debug* -- toc called for :self []
+      """
+      assert stderr == expected
+    end
+  end
+
   describe "capturing output from a complete example" do
     test "mix of errors (verbose)" do
       stderr = capture_io(:stderr, fn ->
