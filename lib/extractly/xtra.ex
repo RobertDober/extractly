@@ -78,7 +78,7 @@ defmodule Extractly.Xtra do
   very same document
 
       iex(4)> toc(:self)
-      "<!---- Extractly Self TOC ---->\n"
+      "<!---- Extractly Self TOC ---->"
 
       iex(5)> toc("test/fixtures/toc-short.md", min_level: 2)
       "- Level2 1.first\n- Level2 1.second\n  - Level3 1.second(i)"
