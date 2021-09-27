@@ -7,12 +7,20 @@ defmodule Extractly.Tools do
     - a Stream
     - or returns the list passed in as in a NOP
   """
-  def lines_from_source(source)
-  def lines_from_source(filename) when is_binary(filename),
+  def lines_from_source(source) do
+    try do
+      _lines_from_source(source)
+    rescue
+      _ -> {:error, "could not read from #{inspect source}"}
+    end
+  end
+
+  defp _lines_from_source(source)
+  defp _lines_from_source(filename) when is_binary(filename),
     do: filename |> File.stream!([:utf8], :line) |> Enum.to_list
-  def lines_from_source(lines) when is_list(lines),
+  defp _lines_from_source(lines) when is_list(lines),
     do: lines
-  def lines_from_source(stream),
+  defp _lines_from_source(stream),
     do: stream |> Enum.to_list
 
   @doc ~S"""

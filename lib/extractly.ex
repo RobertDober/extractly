@@ -249,7 +249,7 @@
       iex(13)> lines = [] # options are checked even if input is empty
       ...(13)> toc(lines, no_such_option: "x")
       {:error, "Unsupported option no_such_option"}
-      
+
   A more detailed description can be found in `Extractly.Toc`'s docstrings
 
   """

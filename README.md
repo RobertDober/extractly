@@ -174,16 +174,16 @@ Returns the output of a mix task
   Ex:
 
 ```elixir
-    iex(12)> Extractly.task("cmd", ~W[echo 42])
+    iex(14)> Extractly.task("cmd", ~W[echo 42])
     "42\n"
 ```
 
 ```elixir
-    iex(13)> try do
-    ...(13)>   Extractly.task("xxx")
-    ...(13)> rescue
-    ...(13)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
-    ...(13)> end
+    iex(15)> try do
+    ...(15)>   Extractly.task("xxx")
+    ...(15)> rescue
+    ...(15)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
+    ...(15)> end
     "The following output was produced wih error code 1"
 ```
 
@@ -203,15 +203,42 @@ The files used for the following doctest can be found [here](https://github.com/
     ...(11)>         "### Support",
     ...(11)> ]
     ...(11)> toc(lines, gh_links: true)
-    [
+    {:ok, [
       "- [Usage](#usage)",
       "  - [API](#api)",
       "    - [EarmarkParser.as_ast/2](#earmarkparseras_ast2)",
       "  - [Support](#support)",
-    ]
+    ]}
 ```
 
-Detailed description can be found in `Extractly.Toc`'s docstrings
+    But if you do not want links
+
+```elixir
+    iex(12)> lines = [
+    ...(12)>         "## Usage",
+    ...(12)>         "### API",
+    ...(12)>         "#### EarmarkParser.as_ast/2",
+    ...(12)>         "### Support",
+    ...(12)> ]
+    ...(12)> toc(lines)
+    {:ok, [
+      "- Usage",
+      "  - API",
+      "    - EarmarkParser.as_ast/2",
+      "  - Support",
+    ]}
+```
+
+  In case of bad options an error tuple is returned (no utf8 encoded
+  input should ever result in an error_tuple
+
+```elixir
+    iex(13)> lines = [] # options are checked even if input is empty
+    ...(13)> toc(lines, no_such_option: "x")
+    {:error, "Unsupported option no_such_option"}
+```
+    
+A more detailed description can be found in `Extractly.Toc`'s docstrings
 
 
 ## Extractly.version/0
@@ -345,6 +372,13 @@ Either a linear `PushList`
     ["I", ["I.1", "I.2", ["I.2.(i)"]], "II", [["II.1.(ii)"]]]
 ```
 
+#### Unsupported Formats
+
+
+```elixir
+    iex(9)> render(["# Does not really matter"], format: :unknown)
+    {:error, "Unsupported format: unknown in render"}
+```
 
 
 ## Mix.Tasks.Xtra
@@ -419,4 +453,4 @@ Copyright © 20[18-21] Robert Dober, robert.dober@gmail.com,
 
 Same as Elixir, which is Apache License v2.0. Please refer to [LICENSE](LICENSE) for details.
 
-SPDX-License-Identifier: Apache-2.0
+<!-- SPDX-License-Identifier: Apache-2.0 -->

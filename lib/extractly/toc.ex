@@ -116,9 +116,12 @@
 
       iex(9)> render(["# Does not really matter"], format: :unknown)
       {:error, "Unsupported format: unknown in render"}
+
   """
 
-  def render(lines, options \\ []) do
+  def render(lines, options \\ [])
+  def render({:error, _}=error, _options), do: error
+  def render(lines, options) do
     case Options.new(options) do
       {:ok, options_} -> lines |> _scan() |> _render(options_)
       error           -> error
