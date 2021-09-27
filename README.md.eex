@@ -9,7 +9,7 @@
 [![Hex.pm](https://img.shields.io/hexpm/dw/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dt/extractly.svg)](https://hex.pm/packages/extractly)
 
-<%= xtra.toc :self, max_level: 3 %>
+<%= xtra.toc :self, max_level: 3, gh_links: true %>
 
 <%= xtra.moduledoc "Extractly", headline: 2, include: :all, wrap_code_blocks: "elixir" %>
 

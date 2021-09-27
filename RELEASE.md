@@ -1,5 +1,9 @@
 # v0.5.2 2021-09-22
 
+- [Table Of Content](https://github.com/robertdober/extractly/issues/18)
+
+- [Mix Task failed for xtra.moduledoc ... include: :all](https://github.com/robertdober/extractly/issues/19)
+
 # v0.5.1 2021-09-22
 
 - [Include all docstrings of a module](https://github.com/robertdober/extractly/issues/16)

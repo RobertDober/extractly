@@ -13,23 +13,23 @@ and any changes you make in this file will most likely be lost
 [![Hex.pm](https://img.shields.io/hexpm/dw/extractly.svg)](https://hex.pm/packages/extractly)
 [![Hex.pm](https://img.shields.io/hexpm/dt/extractly.svg)](https://hex.pm/packages/extractly)
 
-- Extractly
-  - Extractly
-  - Extractly.do_not_edit_warning/1
-  - Extractly.functiondoc/2
-  - Extractly.macrodoc/2
-  - Extractly.moduledoc/2
-  - Extractly.task/2
-  - Extractly.toc/2
-  - Extractly.version/0
-  - Extractly.Toc
-  - Extractly.Toc.render/2
-  - Mix.Tasks.Xtra
-  - Mix task to Transform EEx templates in the context of the `Extractly` module.
-  - Mix.Tasks.Xtra.Help
-    - Usage:
-  - Author
-- LICENSE
+- [Extractly](#extractly)
+  - [Extractly](#extractly)
+  - [Extractly.do_not_edit_warning/1](#extractlydo_not_edit_warning1)
+  - [Extractly.functiondoc/2](#extractlyfunctiondoc2)
+  - [Extractly.macrodoc/2](#extractlymacrodoc2)
+  - [Extractly.moduledoc/2](#extractlymoduledoc2)
+  - [Extractly.task/2](#extractlytask2)
+  - [Extractly.toc/2](#extractlytoc2)
+  - [Extractly.version/0](#extractlyversion0)
+  - [Extractly.Toc](#extractlytoc)
+  - [Extractly.Toc.render/2](#extractlytocrender2)
+  - [Mix.Tasks.Xtra](#mixtasksxtra)
+  - [Mix task to Transform EEx templates in the context of the `Extractly` module.](#mixtasktotransformeextemplatesinthecontextoftheextractlymodule)
+  - [Mix.Tasks.Xtra.Help](#mixtasksxtrahelp)
+    - [Usage:](#usage)
+  - [Author](#author)
+- [LICENSE](#license)
 
 ## Extractly
 
