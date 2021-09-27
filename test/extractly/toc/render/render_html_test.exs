@@ -49,7 +49,7 @@ defmodule Test.Extractly.Toc.Render.RenderHtmlTest do
     end
 
     defp render_html(html, options \\ []),
-    do: Toc.Renderer.HtmlRenderer.render_html(html, Toc.Options.new(options))
+    do: Toc.Renderer.HtmlRenderer.render_html(html, struct(Toc.Options, options))
   end
 
   describe "options and escaping" do

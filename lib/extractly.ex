@@ -220,12 +220,12 @@
       ...(11)>         "### Support",
       ...(11)> ]
       ...(11)> toc(lines, gh_links: true)
-      [
+      {:ok, [
         "- [Usage](#usage)",
         "  - [API](#api)",
         "    - [EarmarkParser.as_ast/2](#earmarkparseras_ast2)",
         "  - [Support](#support)",
-      ]
+      ]}
 
       But if you do not want links
 
@@ -236,18 +236,29 @@
       ...(12)>         "### Support",
       ...(12)> ]
       ...(12)> toc(lines)
-      [
+      {:ok, [
         "- Usage",
         "  - API",
         "    - EarmarkParser.as_ast/2",
         "  - Support",
-      ]
+      ]}
 
+    In case of bad options an error tuple is returned (no utf8 encoded
+    input should ever result in an error_tuple
+
+      iex(13)> lines = [] # options are checked even if input is empty
+      ...(13)> toc(lines, no_such_option: "x")
+      {:error, "Unsupported option no_such_option"}
+      
   A more detailed description can be found in `Extractly.Toc`'s docstrings
 
   """
-  def toc(markdown_doc, options \\ []),
-    do: markdown_doc |> Extractly.Tools.lines_from_source() |> Extractly.Toc.render(options)
+  def toc(markdown_doc, options \\ []) do
+    case markdown_doc |> Extractly.Tools.lines_from_source() |> Extractly.Toc.render(options) do
+      {:error, message} -> {:error, message}
+      data              -> {:ok, data}
+    end
+  end
 
   defp _check_nil_moduledoc(moduledoc_or_nil, name, headline)
 
@@ -260,14 +271,14 @@
   Returns the output of a mix task
     Ex:
 
-      iex(13)> Extractly.task("cmd", ~W[echo 42])
+      iex(14)> Extractly.task("cmd", ~W[echo 42])
       "42\n"
 
-      iex(14)> try do
-      ...(14)>   Extractly.task("xxx")
-      ...(14)> rescue
-      ...(14)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
-      ...(14)> end
+      iex(15)> try do
+      ...(15)>   Extractly.task("xxx")
+      ...(15)> rescue
+      ...(15)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
+      ...(15)> end
       "The following output was produced wih error code 1"
 
   """

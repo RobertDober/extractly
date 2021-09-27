@@ -118,7 +118,12 @@
       {:error, "Unsupported format: unknown in render"}
   """
 
-  def render(lines, options \\ []), do: lines |> _scan() |> _render(Options.new(options))
+  def render(lines, options \\ []) do
+    case Options.new(options) do
+      {:ok, options_} -> lines |> _scan() |> _render(options_)
+      error           -> error
+    end
+  end
 
   @headline_rgx ~r<\A \s{0,3} (\#{1,7}) \s+ (.*)>x
   defp _scan(lines), do:
