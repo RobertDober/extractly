@@ -72,7 +72,7 @@ defmodule Mix.Tasks.Xtra do
 
   defp _maybe_insert_toc(line, result) do
     if String.contains?(line, Extractly.Toc.placeholder) do
-      Extractly.Toc.render(result)
+      Extractly.Toc.render(result, gh_links: true)
     else
       [line]
     end
