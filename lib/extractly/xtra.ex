@@ -92,7 +92,7 @@ defmodule Extractly.Xtra do
   def toc(filename_or_self, opts \\ [])
   def toc(:self, opts) do
     M.add_debug("toc called for :self #{inspect opts}")
-    "<!---- Extractly Self TOC ---->\n"
+    Extractly.Toc.placeholder
   end
   def toc(name, opts) do
     M.add_debug("toc called for #{name} #{inspect opts}")

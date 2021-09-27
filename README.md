@@ -237,7 +237,7 @@ The files used for the following doctest can be found [here](https://github.com/
     ...(13)> toc(lines, no_such_option: "x")
     {:error, "Unsupported option no_such_option"}
 ```
-    
+
 A more detailed description can be found in `Extractly.Toc`'s docstrings
 
 
@@ -381,6 +381,7 @@ Either a linear `PushList`
 ```
 
 
+
 ## Mix.Tasks.Xtra
 
 
@@ -412,7 +413,14 @@ Either a linear `PushList`
       <%= xtra.functiondoc("M.shiny_function/2") %>
       <%= xtra.moduledoc("String") %>
 
+      <%= xtra.moduledoc("MyModule", include: :all) %>
+      <%= xtra.toc "SomeFile.md" %>
+
       More text
+
+  A special case is the occurrence of `<%= xtra.toc :self, ... %>` which just inserts a
+  placeholer which than is replaced by the TOC of the generated output in a second pass
+
 
 
 ## Mix.Tasks.Xtra.Help

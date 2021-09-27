@@ -8,6 +8,10 @@
   Extract Table Of Contents from a list of lines representing a Markdown document
   """
 
+  @placeholder "<!---- Extractly Self TOC ---->"
+  @doc false
+  def placeholder, do: @placeholder
+
   @doc ~S"""
   Depending on the options the Table Of Contents extracted from the lines can be
     rendered in different formats, the default being Markdown
