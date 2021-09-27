@@ -1,6 +1,8 @@
 defmodule Mix.Tasks.Xtra do
   use Mix.Task
 
+  alias Extractly.Toc.Options
+
   @shortdoc "Transforms templates"
 
   @moduledoc """
@@ -39,7 +41,7 @@ defmodule Mix.Tasks.Xtra do
         More text
 
     A special case is the occurrence of `<%= xtra.toc :self, ... %>` which just inserts a
-    placeholer which than is replaced by the TOC of the generated output in a second pass
+    placeholder which than is replaced by the TOC of the generated output in a second pass
 
   """
 
@@ -71,8 +73,9 @@ defmodule Mix.Tasks.Xtra do
     do: {options |> Enum.into(%{}), args, errors}
 
   defp _maybe_insert_toc(line, result) do
-    if String.contains?(line, Extractly.Toc.placeholder) do
-      Extractly.Toc.render(result, gh_links: true)
+    if String.contains?(line, Extractly.Toc.placeholder_pfx) do
+      options = Options.from_string!(line)
+      Extractly.Toc.render(result, options)
     else
       [line]
     end

@@ -8,9 +8,12 @@
   Extract Table Of Contents from a list of lines representing a Markdown document
   """
 
-  @placeholder "<!---- Extractly Self TOC ---->"
+  @placeholder_pfx "<!---- Extractly Self TOC "
+  def placeholder_pfx, do: @placeholder_pfx
+  @placeholder_sfx " ---->"
   @doc false
-  def placeholder, do: @placeholder
+  def placeholder(options),
+    do: [ @placeholder_pfx, Options.to_string(options), @placeholder_sfx ] |> Enum.join
 
   @doc ~S"""
   Depending on the options the Table Of Contents extracted from the lines can be
@@ -125,6 +128,7 @@
 
   def render(lines, options \\ [])
   def render({:error, _}=error, _options), do: error
+  def render(lines, %Options{}=options), do: lines |> _scan() |> _render(options)
   def render(lines, options) do
     case Options.new(options) do
       {:ok, options_} -> lines |> _scan() |> _render(options_)
