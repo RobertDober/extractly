@@ -1,5 +1,6 @@
 defmodule Extractly.Xtra do
   alias Extractly.Messages, as: M
+  alias Extractly.Toc.Options
 
   @moduledoc """
   This wraps `Extractly's` API by putting all messages to be logged to the
@@ -78,7 +79,7 @@ defmodule Extractly.Xtra do
   very same document
 
       iex(4)> toc(:self)
-      "<!---- Extractly Self TOC ---->"
+      "<!---- Extractly Self TOC #{inspect %Extractly.Toc.Options{}} ---->"
 
       iex(5)> toc("test/fixtures/toc-short.md", min_level: 2)
       "- Level2 1.first\n- Level2 1.second\n  - Level3 1.second(i)"
@@ -92,7 +93,7 @@ defmodule Extractly.Xtra do
   def toc(filename_or_self, opts \\ [])
   def toc(:self, opts) do
     M.add_debug("toc called for :self #{inspect opts}")
-    Extractly.Toc.placeholder
+    Extractly.Toc.placeholder(Options.new!(opts))
   end
   def toc(name, opts) do
     M.add_debug("toc called for #{name} #{inspect opts}")
