@@ -17,11 +17,12 @@
 
   def render_push_list(tuples, options), do: tuples |> _normalize_levels(options) |> AstRenderer.render_push_list(options)
 
-  @unlinkables ~r{\W+}
+  @unlinkables ~r{[^-\w]+}
   defp _make_gh_link(text) do
     link =
     text
     |> String.downcase()
+    |> String.replace(~r{\s}, "-")
     |> String.replace(@unlinkables, "")
     "[#{text}](##{link})"
   end

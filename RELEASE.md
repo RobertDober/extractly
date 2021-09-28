@@ -1,4 +1,8 @@
-# v0.5.2 2021-09-22
+# v0.5.3 2021-09-28
+
+- [Bad conversion of spaces in names for GH Links](https://github.com/robertdober/extractly/issues/22)
+
+# v0.5.2 2021-09-27
 
 - [Table Of Content](https://github.com/robertdober/extractly/issues/18)
 
