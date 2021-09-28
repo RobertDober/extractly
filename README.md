@@ -25,7 +25,7 @@ and any changes you make in this file will most likely be lost
   - [Extractly.Toc](#extractlytoc)
   - [Extractly.Toc.render/2](#extractlytocrender2)
   - [Mix.Tasks.Xtra](#mixtasksxtra)
-  - [Mix task to Transform EEx templates in the context of the `Extractly` module.](#mixtasktotransformeextemplatesinthecontextoftheextractlymodule)
+  - [Mix task to Transform EEx templates in the context of the `Extractly` module.](#mix-task-to-transform-eex-templates-in-the-context-of-the-extractly-module)
   - [Mix.Tasks.Xtra.Help](#mixtasksxtrahelp)
     - [Usage:](#usage)
   - [Author](#author)
