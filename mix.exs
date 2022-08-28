@@ -1,7 +1,7 @@
 defmodule Extractly.MixProject do
   use Mix.Project
 
-  @version "0.5.2"
+  @version "0.5.4"
   @url "https://github.com/robertdober/extractly"
 
   @description """
@@ -44,8 +44,7 @@ defmodule Extractly.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:excoveralls, "~> 0.14.2", only: :test},
-      {:dialyxir, "~> 1.0.0-rc", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.14.4", only: :test},
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
     ]

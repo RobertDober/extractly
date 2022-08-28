@@ -1,5 +1,5 @@
 defmodule Extractly.Cli do
-  
+
   @moduledoc """
   Exposes the mix task as an escript for usage on non mix projects
   """

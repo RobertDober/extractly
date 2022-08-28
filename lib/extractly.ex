@@ -35,43 +35,54 @@
     Ex:
 
         iex(1)> {:ok, lines} = Extractly.functiondoc("Extractly.moduledoc/2") |> hd()
-        ...(1)> lines |> String.split("\n") |> Enum.take(3)
+        ...(1)> lines |> String.split("\n") |> Enum.take(4)
+        ["<!-- BEGIN: Functiondoc from Extractly.moduledoc/2 -->",  Returns docstring of a module", "", "  E.g. verbatim"]
+        ...(1)> lines |> String.split("\n") |> List.last
+        "<!-- END: Functiondoc from Extractly.moduledoc/2 -->"
+
+
+        iex(2)> {:ok, lines} = Extractly.functiondoc("Extractly.moduledoc/2", comments: false) |> hd()
+        ...(2)> lines |> String.split("\n") |> Enum.take(3)
         ["  Returns docstring of a module", "", "  E.g. verbatim"]
 
     We can also pass a list of functions to get their docs concatenated
 
-        iex(2)> [{:ok, moduledoc}, {:error, message}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
-        ...(2)> moduledoc |> String.split("\n") |> Enum.take(4)
+        iex(3)> [{:ok, moduledoc}, {:error, message}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
+        ...(3)> moduledoc |> String.split("\n") |> Enum.take(4)
         [ "  Returns docstring of a module",
           "  E.g. verbatim",
           "",
           "      Extractly.moduledoc(\"Extractly\")"]
-        ...(2)> message
+        ...(3)> message
         "Function doc for function Extactly.functiondoc/2 not found"
 
     If all the functions are in the same module the following form can be used
 
-        iex(3)> [{:ok, out}, _] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
-        ...(3)> String.split(out, "\n") |> hd()
+        iex(4)> [{:ok, out}, _] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly")
+        ...(4)> String.split(out, "\n") |> hd()
+        "<!-- BEGIN: Functiondoc from Extractly.moduledoc/2 -->"
+
+        iex(5)> [{:ok, out}, _] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", comments: false)
+        ...(5)> String.split(out, "\n") |> hd()
         "  Returns docstring of a module"
 
     However it is convenient to add a markdown headline before each functiondoc, especially in these cases,
     it can be done by indicating the `headline: level` option
 
-        iex(4)> [{:ok, moduledoc}, {:ok, functiondoc}] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
-        ...(4)> moduledoc |> String.split("\n") |> Enum.take(3)
+        iex(6)> [{:ok, moduledoc}, {:ok, functiondoc}] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
+        ...(6)> moduledoc |> String.split("\n") |> Enum.take(3)
         [ "## Extractly.moduledoc/2",
           "",
           "  Returns docstring of a module"]
-        ...(4)> functiondoc |> String.split("\n") |> Enum.take(3)
+        ...(6)> functiondoc |> String.split("\n") |> Enum.take(3)
         [ "## Extractly.functiondoc/2",
           "",
           "  Returns docstring of a function"]
 
     Often times we are interested by **all** public functiondocs...
 
-        iex(5)> [{:ok, out}|_] = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
-        ...(5)> String.split(out, "\n") |> Enum.take(3)
+        iex(7)> [{:ok, out}|_] = Extractly.functiondoc(:all, module: "Extractly", headline: 2)
+        ...(7)> String.split(out, "\n") |> Enum.take(3)
         [ "## Extractly.do_not_edit_warning/1",
           "",
           "  Emits a comment including a message not to edit the created file, as it will be recreated from this template."]
@@ -80,8 +91,8 @@
 
     Here is an example
 
-        iex(6)> [ok: doc] = Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
-        ...(6)> doc |> String.split("\n") |> Enum.take(10)
+        iex(8)> [ok: doc] = Extractly.functiondoc("Extractly.functiondoc/2", wrap_code_blocks: "elixir")
+        ...(8)> doc |> String.split("\n") |> Enum.take(10)
         [ "  Returns docstring of a function",
           "  Ex:",
           "",
@@ -145,14 +156,14 @@
 
     E.g. verbatim
 
-        iex(7)> {:ok, doc} = Extractly.moduledoc("Extractly")
-        ...(7)> doc
+        iex(9)> {:ok, doc} = Extractly.moduledoc("Extractly")
+        ...(9)> doc
         "  Provide easy access to information inside the templates rendered by `mix xtra`\n"
 
     We can use the same options as with `functiondoc`
 
-        iex(8)> {:ok, doc} = Extractly.moduledoc("Extractly", headline: 2)
-        ...(8)> doc |> String.split("\n") |> Enum.take(3)
+        iex(10)> {:ok, doc} = Extractly.moduledoc("Extractly", headline: 2)
+        ...(10)> doc |> String.split("\n") |> Enum.take(3)
         [
           "## Extractly", "", "  Provide easy access to information inside the templates rendered by `mix xtra`"
         ]
@@ -160,14 +171,14 @@
     If we also want to use `functiondoc :all, module: "Extractly"` **after** the call of `moduledoc` we can
     include `:all` in the call of `moduledoc`, which will include function and macro docstrings as well
 
-        iex(9)> [{:ok, moduledoc} | _] =
-        ...(9)>   moduledoc("Extractly", headline: 3, include: :all)
-        ...(9)> moduledoc
+        iex(11)> [{:ok, moduledoc} | _] =
+        ...(11)>   moduledoc("Extractly", headline: 3, include: :all)
+        ...(11)> moduledoc
         "### Extractly\n\n  Provide easy access to information inside the templates rendered by `mix xtra`\n"
 
-        iex(10)> [_, {:ok, first_functiondoc} | _] =
-        ...(10)>   moduledoc("Extractly", headline: 3, include: :all)
-        ...(10)> first_functiondoc |> String.split("\n") |> Enum.take(5)
+        iex(12)> [_, {:ok, first_functiondoc} | _] =
+        ...(12)>   moduledoc("Extractly", headline: 3, include: :all)
+        ...(12)> first_functiondoc |> String.split("\n") |> Enum.take(5)
         [
           "### Extractly.do_not_edit_warning/1",
           "",
@@ -213,13 +224,13 @@
 
   The files used for the following doctest can be found [here](https://github.com/RobertDober/extractly/tree/master/test/fixtures)
 
-      iex(11)> lines = [
-      ...(11)>         "## Usage",
-      ...(11)>         "### API",
-      ...(11)>         "#### EarmarkParser.as_ast/2",
-      ...(11)>         "### Support",
-      ...(11)> ]
-      ...(11)> toc(lines, gh_links: true)
+      iex(13)> lines = [
+      ...(13)>         "## Usage",
+      ...(13)>         "### API",
+      ...(13)>         "#### EarmarkParser.as_ast/2",
+      ...(13)>         "### Support",
+      ...(13)> ]
+      ...(13)> toc(lines, gh_links: true)
       {:ok, [
         "- [Usage](#usage)",
         "  - [API](#api)",
@@ -229,13 +240,13 @@
 
       But if you do not want links
 
-      iex(12)> lines = [
-      ...(12)>         "## Usage",
-      ...(12)>         "### API",
-      ...(12)>         "#### EarmarkParser.as_ast/2",
-      ...(12)>         "### Support",
-      ...(12)> ]
-      ...(12)> toc(lines)
+      iex(14)> lines = [
+      ...(14)>         "## Usage",
+      ...(14)>         "### API",
+      ...(14)>         "#### EarmarkParser.as_ast/2",
+      ...(14)>         "### Support",
+      ...(14)> ]
+      ...(14)> toc(lines)
       {:ok, [
         "- Usage",
         "  - API",
@@ -246,8 +257,8 @@
     In case of bad options an error tuple is returned (no utf8 encoded
     input should ever result in an error_tuple
 
-      iex(13)> lines = [] # options are checked even if input is empty
-      ...(13)> toc(lines, no_such_option: "x")
+      iex(15)> lines = [] # options are checked even if input is empty
+      ...(15)> toc(lines, no_such_option: "x")
       {:error, "Unsupported option no_such_option"}
 
   A more detailed description can be found in `Extractly.Toc`'s docstrings
@@ -271,14 +282,14 @@
   Returns the output of a mix task
     Ex:
 
-      iex(14)> Extractly.task("cmd", ~W[echo 42])
+      iex(16)> Extractly.task("cmd", ~W[echo 42])
       "42\n"
 
-      iex(15)> try do
-      ...(15)>   Extractly.task("xxx")
-      ...(15)> rescue
-      ...(15)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
-      ...(15)> end
+      iex(17)> try do
+      ...(17)>   Extractly.task("xxx")
+      ...(17)> rescue
+      ...(17)>   e in RuntimeError -> e.message |> String.split("\n") |> hd()
+      ...(17)> end
       "The following output was produced wih error code 1"
 
   """

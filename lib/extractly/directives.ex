@@ -4,7 +4,7 @@ defmodule Extractly.Directives do
   """
 
   @doc """
-  
+
   """
   def process(lines, wrap?)
   def process(lines, wrap?) when is_binary(lines), do: lines |> String.split("\n") |> process(wrap?)
@@ -38,3 +38,4 @@ defmodule Extractly.Directives do
     end
   end
 end
+# SPDX-License-Identifier: Apache-2.0
