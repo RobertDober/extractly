@@ -105,10 +105,13 @@ defmodule Mix.Tasks.Xtra do
   defp _process(options, template)
   defp _process(%{help: true}, _), do: IO.puts(@help_text)
   defp _process(%{version: true}, _), do: IO.puts(Extractly.version)
-  defp _process(options, template), do:
-    if File.exists?(template),
-      do: _process_template(options, template),
-      else: _puts_err("Template #{template} does not exist", options)
+  defp _process(options, template) do
+    if File.exists?(template) do
+      _process_template(options, template)
+    else
+      _puts_err("Template #{template} does not exist", options)
+    end
+  end
 
   defp _process_template(options, template) do
     try do
