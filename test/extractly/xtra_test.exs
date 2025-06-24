@@ -1,5 +1,5 @@
 defmodule Test.Extractly.XtraTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
 
   doctest Extractly.Xtra, import: true
 

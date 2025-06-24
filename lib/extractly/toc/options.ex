@@ -12,9 +12,9 @@ defmodule Extractly.Toc.Options do
 
   # %Extractly.Toc.Options{format: :markdown, gh_links: false, max_level: 7, min_level: 1, remove_gaps: false, start: 1, type: :ul}
   # This only works because no values are strings and do not contain ",", "{", or "}"
-  @parse_rgx ~r< \{ (.*) \} >x
+  defp parse_rgx, do: ~r< \{ (.*) \} >x
   def from_string!(str) do
-    case  Regex.run(@parse_rgx, str) do
+    case  Regex.run(parse_rgx(), str) do
       [_, content] -> _parse_str(content, new!())
       _ -> raise "Illegal Options representation: #{str}"
     end
@@ -67,9 +67,9 @@ defmodule Extractly.Toc.Options do
   end
 
   # This only works because no values are strings and do not contain ",", "{", or "}"
-  @elergx ~r{ (\w+): \s (\S+)(?:,|\z) }x
+  defp elergx, do: ~r{ (\w+): \s (\S+)(?:,|\z) }x
   defp _parse_str(str, options) do
-    @elergx
+    elergx()
     |> Regex.scan(str)
     |> Enum.reduce(options, fn [_, key, value], options_ -> _add_parsed_option(String.to_atom(key), value, options_) end)
   end

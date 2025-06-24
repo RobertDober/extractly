@@ -136,10 +136,10 @@
     end
   end
 
-  @headline_rgx ~r<\A \s{0,3} (\#{1,7}) \s+ (.*)>x
+  defp headline_rgx, do: ~r<\A \s{0,3} (\#{1,7}) \s+ (.*)>x
   defp _scan(lines), do:
     lines
-    |> Enum.map(&Regex.run(@headline_rgx, &1))
+    |> Enum.map(&Regex.run(headline_rgx(), &1))
     |> Enum.filter(& &1)
     |> Enum.map(fn [_, header, text] -> {String.length(header), text} end)
 

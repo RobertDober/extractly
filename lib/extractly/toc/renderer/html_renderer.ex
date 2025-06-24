@@ -1,4 +1,4 @@
-  defmodule Extractly.Toc.Renderer.HtmlRenderer do
+defmodule Extractly.Toc.Renderer.HtmlRenderer do
   @moduledoc false
   import Extractly.Toc.Renderer.AstRenderer, only: [render_push_list: 1]
 
@@ -18,7 +18,7 @@
   end
   defp _to_html([:open | rest], options, result) do
     _to_html(rest, options, ["<li>#{_open_tag(options)}"|result])
-  end
+  end 
   defp _to_html([head, :open | rest], options, result) when is_binary(head) do
     _to_html(rest, options, ["<li>#{_escape(head)}#{_open_tag(options)}" | result])
   end
@@ -33,12 +33,15 @@
   defp _open_tag(%{type: type, start: 1}, _), do: "<#{type}>"
   defp _open_tag(%{type: type, start: start}, true), do: ~s{<#{type} start="#{start}">}
 
-  @amp_rgx ~r{&(?!#?\w+;)}
+  defp amp_rgx do
+    ~r{&(?!#?\w+;)}
+  end
+
   defp _escape(html), do:
-    Regex.replace(@amp_rgx, html, "&amp;")
-    |> String.replace("<", "&lt;")
-    |> String.replace(">", "&gt;")
-    |> String.replace("\"", "&quot;")
-    |> String.replace("'", "&#39;")
+  Regex.replace(amp_rgx(), html, "&amp;")
+  |> String.replace("<", "&lt;")
+  |> String.replace(">", "&gt;")
+  |> String.replace("\"", "&quot;")
+  |> String.replace("'", "&#39;")
 
 end

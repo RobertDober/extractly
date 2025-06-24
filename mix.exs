@@ -1,7 +1,7 @@
 defmodule Extractly.MixProject do
   use Mix.Project
 
-  @version "0.6.0"
+  @version "0.6.1"
   @url "https://github.com/robertdober/extractly"
 
   @description """
@@ -15,7 +15,7 @@ defmodule Extractly.MixProject do
     [
       app: :extractly,
       version: @version,
-      elixir: "~> 1.12",
+      elixir: "~> 1.19-rc",
       elixirc_paths: elixirc_paths(Mix.env()),
       escript: [main_module: Extractly.Cli],
       start_permanent: Mix.env() == :prod,
@@ -24,12 +24,6 @@ defmodule Extractly.MixProject do
       package: package(),
       # aliases: [docs: &docs/1, readme: &readme/1],
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.detail": :test,
-        "coveralls.post": :test,
-        "coveralls.html": :test
-      ],
       aliases: [docs: &build_docs/1]
     ]
   end
@@ -41,11 +35,15 @@ defmodule Extractly.MixProject do
     ]
   end
 
+  def cli do
+      [preferred_envs: [coveralls: :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]]
+  end
+
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:excoveralls, "~> 0.18.0", only: :test},
-      {:dialyxir, "~> 1.4.3", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4.5", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.18.5", only: [:test]},
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
     ]
@@ -65,7 +63,7 @@ defmodule Extractly.MixProject do
         "Robert Dober <robert.dober@gmail.com>"
       ],
       licenses: [
-        "Apache 2 (see the file LICENSE for details)"
+        "Apache-2.0"
       ],
       links: %{
         "GitHub" => "https://github.com/robertdober/extractly"

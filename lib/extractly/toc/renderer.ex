@@ -1,4 +1,4 @@
-  defmodule Extractly.Toc.Renderer do
+defmodule Extractly.Toc.Renderer do
 
   alias Extractly.Toc.Renderer.AstRenderer
   alias Extractly.Toc.Renderer.HtmlRenderer
@@ -17,13 +17,13 @@
 
   def render_push_list(tuples, options), do: tuples |> _normalize_levels(options) |> AstRenderer.render_push_list(options)
 
-  @unlinkables ~r{[^-\w]+}
+  defp unlinkables, do: ~r{[^-\w]+}
   defp _make_gh_link(text) do
     link =
-    text
-    |> String.downcase()
-    |> String.replace(~r{\s}, "-")
-    |> String.replace(@unlinkables, "")
+      text
+      |> String.downcase()
+      |> String.replace(~r{\s}, "-")
+      |> String.replace(unlinkables(), "")
     "[#{text}](##{link})"
   end
 
@@ -34,7 +34,7 @@
   defp _maybe_remove_levels(tuples, options)
   defp _maybe_remove_levels(tuples, %{min_level: 1, max_level: 7}), do: tuples
   defp _maybe_remove_levels(tuples, %{min_level: min, max_level: max}),
-    do: _remove_levels(tuples, min..max)
+  do: _remove_levels(tuples, min..max)
 
   defp _normalize_levels(levels, options) do
     levels_ = _maybe_remove_levels(levels, options)
@@ -48,16 +48,16 @@
       |> Enum.into(%{})
 
     levels_
-      |> Enum.map(fn {l, text} -> {Map.get(level_translation_map, l), text} end)
-      |> _maybe_remove_gaps(options)
+    |> Enum.map(fn {l, text} -> {Map.get(level_translation_map, l), text} end)
+    |> _maybe_remove_gaps(options)
   end
 
   defp _remove_gaps(tuples, clevel \\ 1, result \\ [])
   defp _remove_gaps([], _clevel, result), do: Enum.reverse(result)
   defp _remove_gaps([{tlevel, text}|rest], clevel, result) when tlevel <= clevel + 1,
-    do: _remove_gaps(rest, tlevel, [{tlevel, text}|result])
+  do: _remove_gaps(rest, tlevel, [{tlevel, text}|result])
   defp _remove_gaps([{_tlevel, text}|rest], clevel, result),
-    do: _remove_gaps(rest, clevel+1, [{clevel+1, text}|result])
+  do: _remove_gaps(rest, clevel+1, [{clevel+1, text}|result])
 
   defp _remove_levels(tuples, range), do: Enum.filter(tuples, fn {l, _} -> Enum.member?(range, l) end)
 

@@ -41,13 +41,12 @@
     We can also pass a list of functions to get their docs concatenated
 
         iex(2)> [{:ok, moduledoc}, {:error, message}] = Extractly.functiondoc(["Extractly.moduledoc/2", "Extactly.functiondoc/2"])
-        ...(2)> moduledoc |> String.split("\n") |> Enum.take(4)
+        ...(2)> {moduledoc |> String.split("\n") |> Enum.take(4), message}
+        {
         [ "  Returns docstring of a module",
-          "  E.g. verbatim",
           "",
-          "      Extractly.moduledoc(\"Extractly\")"]
-        ...(2)> message
-        "Function doc for function Extactly.functiondoc/2 not found"
+          "  E.g. verbatim", ""],
+        "Function doc for function Extactly.functiondoc/2 not found"}
 
     If all the functions are in the same module the following form can be used
 
@@ -59,14 +58,17 @@
     it can be done by indicating the `headline: level` option
 
         iex(4)> [{:ok, moduledoc}, {:ok, functiondoc}] = Extractly.functiondoc(["moduledoc/2", "functiondoc/2"], module: "Extractly", headline: 2)
-        ...(4)> moduledoc |> String.split("\n") |> Enum.take(3)
+        ...(4)> {
+        ...(4)> moduledoc |> String.split("\n") |> Enum.take(3),
+        ...(4)> functiondoc |> String.split("\n") |> Enum.take(3)
+        ...(4)> }
+        {
         [ "## Extractly.moduledoc/2",
           "",
-          "  Returns docstring of a module"]
-        ...(4)> functiondoc |> String.split("\n") |> Enum.take(3)
+          "  Returns docstring of a module"],
         [ "## Extractly.functiondoc/2",
           "",
-          "  Returns docstring of a function"]
+          "  Returns docstring of a function"]}
 
     Often times we are interested by **all** public functiondocs...
 
